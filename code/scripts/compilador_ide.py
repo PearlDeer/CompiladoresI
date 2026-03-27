@@ -31,26 +31,30 @@ from PyQt6.QtCore import Qt, QRect, QSize, QRegularExpression, QProcess
 # Paleta de colores del IDE
 # =============================================================================
 class Colores:
-    FONDO_PRINCIPAL = "#1e1e2e"       # Fondo del editor
-    FONDO_PANEL = "#181825"           # Fondo de paneles
-    FONDO_BARRA = "#11111b"           # Fondo de barras
-    FONDO_LINEA_NUM = "#1e1e2e"       # Fondo numeros de linea
-    FONDO_LINEA_ACTUAL = "#2a2a3c"    # Resaltado linea actual
-    TEXTO = "#cdd6f4"                 # Texto principal
-    TEXTO_SECUNDARIO = "#a6adc8"      # Texto secundario
-    TEXTO_LINEA_NUM = "#6c7086"       # Numeros de linea
-    ACENTO = "#89b4fa"                # Azul acento
-    ACENTO_HOVER = "#74c7ec"          # Azul hover
-    VERDE = "#a6e3a1"                 # Exito / tokens validos
-    AMARILLO = "#f9e2af"              # Advertencias
-    ROJO = "#f38ba8"                  # Errores
-    NARANJA = "#fab387"               # Numeros / constantes
-    ROSA = "#f5c2e7"                  # Strings
-    LAVANDA = "#b4befe"               # Keywords
-    BORDE = "#313244"                 # Bordes
-    SELECCION = "#45475a"             # Seleccion de texto
-    TAB_ACTIVO = "#1e1e2e"            # Tab seleccionado
-    TAB_INACTIVO = "#181825"          # Tab no seleccionado
+    FONDO_PRINCIPAL     = "#1b1f24"   # Fondo del editor (gris azulado oscuro)
+    FONDO_PANEL         = "#161a1e"   # Paneles
+    FONDO_BARRA         = "#121519"   # Barras
+    FONDO_LINEA_NUM     = "#1b1f24"   # Fondo números de línea
+    FONDO_LINEA_ACTUAL  = "#242a30"   # Línea actual
+
+    TEXTO               = "#d0d7de"   # Texto principal
+    TEXTO_SECUNDARIO    = "#9aa4ad"   # Texto secundario
+    TEXTO_LINEA_NUM     = "#6e7681"   # Números de línea
+
+    ACENTO              = "#4f7cff"   # Azul sobrio
+    ACENTO_HOVER        = "#6b8cff"
+
+    VERDE               = "#5fb3a2"   # Éxito / tokens válidos
+    AMARILLO            = "#c9b458"   # Advertencias
+    ROJO                = "#d16969"   # Errores
+    NARANJA             = "#d7a55f"   # Números / constantes
+    ROSA                = "#c586c0"   # Strings
+    LAVANDA             = "#8aa3ff"   # Keywords
+
+    BORDE               = "#2a2f36"   # Bordes
+    SELECCION           = "#30363d"   # Selección
+    TAB_ACTIVO          = "#1b1f24"   # Tab activo
+    TAB_INACTIVO        = "#161a1e"   # Tab inactivo
 
 
 # =============================================================================
@@ -302,14 +306,21 @@ QMessageBox QLabel {{
 class ResaltadorSintaxis(QSyntaxHighlighter):
     """Resaltador de sintaxis para el editor.
 
-    Colores segun PDF:
-        Color 1 - Numeros enteros y reales       -> NARANJA
-        Color 2 - Identificadores                 -> VERDE
-        Color 3 - Comentarios (una y multi linea) -> TEXTO_LINEA_NUM (gris italica)
-        Color 4 - Palabras reservadas             -> LAVANDA (bold)
-        Color 5 - Operadores aritmeticos          -> ACENTO_HOVER (cyan)
-        Color 6 - Op. relacionales y logicos      -> AMARILLO
-        Cadenas/Caracteres                        -> ROSA
+    Colores segun PDF (Fase Analisis Lexico):
+        Color 1 - Numeros enteros y reales       -> NARANJA (#d7a55f)
+        Color 2 - Identificadores                 -> VERDE (#5fb3a2)
+        Color 3 - Comentarios (una y multi linea) -> GRIS ITALICA (#6e7681)
+        Color 4 - Palabras reservadas             -> LAVANDA (#8aa3ff) bold
+                  if, else, end, do, while, switch, case, int, float, main, cin, cout
+        Color 5 - Operadores aritmeticos          -> CYAN (#6b8cff)
+                  +, -, *, /, %, ^, ++, --
+        Color 6 - Operadores relacionales/logicos -> AMARILLO (#c9b458)
+                  <, <=, >, >=, !=, ==, &&, ||, !
+        
+        Sin color especifico:
+        - Simbolos: (, ), {, }, ,, ;
+        - Asignacion: =
+        - Cadenas "..." y Caracteres '...'        -> ROSA (#c586c0)
     """
 
     def __init__(self, parent=None):
@@ -317,6 +328,7 @@ class ResaltadorSintaxis(QSyntaxHighlighter):
         self.reglas = []
 
         # ---- Color 4: Palabras reservadas (segun PDF) ----
+        # if, else, end, do, while, switch, case, int, float, main, cin, cout
         fmt_keyword = QTextCharFormat()
         fmt_keyword.setForeground(QColor(Colores.LAVANDA))
         fmt_keyword.setFontWeight(QFont.Weight.Bold)
@@ -329,7 +341,7 @@ class ResaltadorSintaxis(QSyntaxHighlighter):
         for kw in keywords:
             self.reglas.append((QRegularExpression(kw), fmt_keyword))
 
-        # ---- Color 2: Identificadores ----
+        # ---- Color 2: Identificadores (letras y digitos, no empiezan con digito) ----
         fmt_identificador = QTextCharFormat()
         fmt_identificador.setForeground(QColor(Colores.VERDE))
         self.reglas.append((
@@ -344,35 +356,38 @@ class ResaltadorSintaxis(QSyntaxHighlighter):
         # ---- Color 1: Numeros enteros y reales ----
         fmt_numeros = QTextCharFormat()
         fmt_numeros.setForeground(QColor(Colores.NARANJA))
+        # Reconoce numeros enteros y reales (ej: 123, 3.14, 0.5)
         self.reglas.append((
             QRegularExpression("\\b[0-9]+(\\.[0-9]+)?\\b"),
             fmt_numeros
         ))
 
-        # ---- Color 5: Operadores aritmeticos: + - * / % ^ ++ -- ----
+        # ---- Color 5: Operadores aritmeticos: +, -, *, /, %, ^, ++, -- ----
         fmt_op_aritmetico = QTextCharFormat()
         fmt_op_aritmetico.setForeground(QColor(Colores.ACENTO_HOVER))
+        # Primero los dobles (++ --) para evitar conflictos
         self.reglas.append((
             QRegularExpression("\\+\\+|--|[+\\-*/%^]"),
             fmt_op_aritmetico
         ))
 
-        # ---- Color 6: Operadores relacionales y logicos (mismo color) ----
+        # ---- Color 6: Operadores relacionales y logicos (mismo color segun PDF) ----
+        # Relacionales: <, <=, >, >=, !=, ==
+        # Logicos: && (and), || (or), ! (not)
         fmt_op_rel_log = QTextCharFormat()
         fmt_op_rel_log.setForeground(QColor(Colores.AMARILLO))
-        # Relacionales: <= >= != == < >
-        # Logicos: && || !
+        # Primero los dobles para evitar conflictos con simples
         self.reglas.append((
             QRegularExpression("<=|>=|!=|==|&&|\\|\\||[<>!]"),
             fmt_op_rel_log
         ))
 
-        # ---- Cadenas con comillas dobles ----
+        # ---- Cadenas con comillas dobles: "..." ----
         fmt_string = QTextCharFormat()
         fmt_string.setForeground(QColor(Colores.ROSA))
         self.reglas.append((QRegularExpression('"[^"]*"'), fmt_string))
 
-        # ---- Caracteres con comillas simples ----
+        # ---- Caracteres con comillas simples: '...' ----
         self.reglas.append((QRegularExpression("'[^']*'"), fmt_string))
 
         # ---- Color 3: Comentarios de una linea // ----
