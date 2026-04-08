@@ -321,79 +321,104 @@ class ResaltadorSintaxis(QSyntaxHighlighter):
         - Simbolos: (, ), {, }, ,, ;
         - Asignacion: =
         - Cadenas "..." y Caracteres '...'        -> ROSA (#c586c0)
+    
+    NOTA: El orden de las reglas importa. Se aplican en secuencia y las
+    ultimas sobrescriben a las anteriores. Por eso:
+    1. Primero numeros (para que 32.0 en "32.0algo" se coloree)
+    2. Luego identificadores (para que "algo" despues del numero se coloree)
+    3. Finalmente keywords (para sobrescribir identificadores que son reservados)
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.reglas = []
 
-        # ---- Color 4: Palabras reservadas (segun PDF) ----
-        # if, else, end, do, while, switch, case, int, float, main, cin, cout
-        fmt_keyword = QTextCharFormat()
-        fmt_keyword.setForeground(QColor(Colores.LAVANDA))
-        fmt_keyword.setFontWeight(QFont.Weight.Bold)
-        keywords = [
-            "\\bif\\b", "\\belse\\b", "\\bend\\b", "\\bdo\\b",
-            "\\bwhile\\b", "\\bswitch\\b", "\\bcase\\b",
-            "\\bint\\b", "\\bfloat\\b", "\\bmain\\b",
-            "\\bcin\\b", "\\bcout\\b",
-        ]
-        for kw in keywords:
-            self.reglas.append((QRegularExpression(kw), fmt_keyword))
-
-        # ---- Color 2: Identificadores (letras y digitos, no empiezan con digito) ----
-        fmt_identificador = QTextCharFormat()
-        fmt_identificador.setForeground(QColor(Colores.VERDE))
-        self.reglas.append((
-            QRegularExpression("\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"),
-            fmt_identificador
-        ))
-
-        # Re-aplicar keywords despues de identificadores para que tengan prioridad
-        for kw in keywords:
-            self.reglas.append((QRegularExpression(kw), fmt_keyword))
-
-        # ---- Color 1: Numeros enteros y reales ----
-        fmt_numeros = QTextCharFormat()
-        fmt_numeros.setForeground(QColor(Colores.NARANJA))
-        # Reconoce numeros enteros y reales (ej: 123, 3.14, 0.5)
-        self.reglas.append((
-            QRegularExpression("\\b[0-9]+(\\.[0-9]+)?\\b"),
-            fmt_numeros
-        ))
-
-        # ---- Color 5: Operadores aritmeticos: +, -, *, /, %, ^, ++, -- ----
-        fmt_op_aritmetico = QTextCharFormat()
-        fmt_op_aritmetico.setForeground(QColor(Colores.ACENTO_HOVER))
-        # Primero los dobles (++ --) para evitar conflictos
-        self.reglas.append((
-            QRegularExpression("\\+\\+|--|[+\\-*/%^]"),
-            fmt_op_aritmetico
-        ))
-
-        # ---- Color 6: Operadores relacionales y logicos (mismo color segun PDF) ----
-        # Relacionales: <, <=, >, >=, !=, ==
-        # Logicos: && (and), || (or), ! (not)
-        fmt_op_rel_log = QTextCharFormat()
-        fmt_op_rel_log.setForeground(QColor(Colores.AMARILLO))
-        # Primero los dobles para evitar conflictos con simples
-        self.reglas.append((
-            QRegularExpression("<=|>=|!=|==|&&|\\|\\||[<>!]"),
-            fmt_op_rel_log
-        ))
-
-        # ---- Cadenas con comillas dobles: "..." ----
-        fmt_string = QTextCharFormat()
-        fmt_string.setForeground(QColor(Colores.ROSA))
-        self.reglas.append((QRegularExpression('"[^"]*"'), fmt_string))
-
-        # ---- Caracteres con comillas simples: '...' ----
-        self.reglas.append((QRegularExpression("'[^']*'"), fmt_string))
-
-        # ---- Color 3: Comentarios de una linea // ----
+        # Guardamos los formatos para uso posterior
+        self.fmt_keyword = QTextCharFormat()
+        self.fmt_keyword.setForeground(QColor(Colores.LAVANDA))
+        self.fmt_keyword.setFontWeight(QFont.Weight.Bold)
+        
+        self.fmt_identificador = QTextCharFormat()
+        self.fmt_identificador.setForeground(QColor(Colores.VERDE))
+        
+        self.fmt_numeros = QTextCharFormat()
+        self.fmt_numeros.setForeground(QColor(Colores.NARANJA))
+        
+        self.fmt_op_aritmetico = QTextCharFormat()
+        self.fmt_op_aritmetico.setForeground(QColor(Colores.ACENTO_HOVER))
+        
+        self.fmt_op_rel_log = QTextCharFormat()
+        self.fmt_op_rel_log.setForeground(QColor(Colores.AMARILLO))
+        
+        self.fmt_string = QTextCharFormat()
+        self.fmt_string.setForeground(QColor(Colores.ROSA))
+        
         self.fmt_comentario = QTextCharFormat()
         self.fmt_comentario.setForeground(QColor(Colores.TEXTO_LINEA_NUM))
         self.fmt_comentario.setFontItalic(True)
+
+        # Lista de palabras reservadas
+        self.keywords = [
+            "if", "else", "end", "do", "while", "switch", "case",
+            "int", "float", "main", "cin", "cout"
+        ]
+
+        # ---- ORDEN DE REGLAS (importante para el resaltado correcto) ----
+        
+        # 1. Color 1: Numeros enteros y reales PRIMERO
+        # Regex mejorada que reconoce:
+        # - Numeros reales completos: 32.0, 3.14, 0.5 (con digitos despues del punto)
+        # - Numeros enteros: 123, 0, 42
+        # 
+        # Comportamiento deseado:
+        # - "32.0algo" -> "32.0" naranja (real valido), "algo" verde (identificador)
+        # - "32.algo"  -> "32" naranja (entero), "." sin color, "algo" verde
+        # - "123abc"   -> se manejara como error en el compilador, aqui solo se colorea
+        #
+        # (?<![a-zA-Z_]) = lookbehind negativo: no debe haber letra/guion antes
+        # \d+\.\d+ = numero real (digitos, punto, digitos obligatorios)
+        # \d+ = numero entero
+        self.reglas.append((
+            QRegularExpression("(?<![a-zA-Z_])\\d+\\.\\d+|(?<![a-zA-Z_.])\\d+"),
+            self.fmt_numeros
+        ))
+
+        # 2. Color 2: Identificadores (letras y digitos, no empiezan con digito)
+        self.reglas.append((
+            QRegularExpression("\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"),
+            self.fmt_identificador
+        ))
+
+        # 3. Color 4: Palabras reservadas AL FINAL para sobrescribir identificadores
+        for kw in self.keywords:
+            self.reglas.append((
+                QRegularExpression(f"\\b{kw}\\b"),
+                self.fmt_keyword
+            ))
+
+        # 4. Color 5: Operadores aritmeticos: +, -, *, /, %, ^, ++, --
+        # Primero los dobles (++ --) para evitar conflictos
+        self.reglas.append((
+            QRegularExpression("\\+\\+|--|[+\\-*/%^]"),
+            self.fmt_op_aritmetico
+        ))
+
+        # 5. Color 6: Operadores relacionales y logicos (mismo color segun PDF)
+        # Relacionales: <, <=, >, >=, !=, ==
+        # Logicos: && (and), || (or), ! (not)
+        # Primero los dobles para evitar conflictos con simples
+        self.reglas.append((
+            QRegularExpression("<=|>=|!=|==|&&|\\|\\||[<>!]"),
+            self.fmt_op_rel_log
+        ))
+
+        # 6. Cadenas con comillas dobles: "..."
+        self.reglas.append((QRegularExpression('"[^"]*"'), self.fmt_string))
+
+        # 7. Caracteres con comillas simples: '...'
+        self.reglas.append((QRegularExpression("'[^']*'"), self.fmt_string))
+
+        # 8. Color 3: Comentarios de una linea //
         self.reglas.append((
             QRegularExpression("//[^\n]*"),
             self.fmt_comentario
@@ -1347,23 +1372,73 @@ class VentanaPrincipal(QMainWindow):
                                         "tipo": "Error Lexico", "descripcion": f"Caracter sin cerrar: {linea[inicio:]}"})
                     continue
 
-                # Numeros
+                # Numeros (enteros y reales)
+                # Casos:
+                # - "32.algo" -> "32." es error, "algo" es identificador
+                # - "32.0algo" -> "32.0" es NUMERO_REAL, "algo" es IDENTIFICADOR
+                # - "123abc" -> error (identificador que empieza con digito)
                 if ch.isdigit():
-                    inicio = col; tiene_punto = False
-                    while col < len(linea) and (linea[col].isdigit() or linea[col] == '.'):
-                        if linea[col] == '.':
-                            if tiene_punto: break
-                            tiene_punto = True
+                    inicio = col
+                    tiene_punto = False
+                    tiene_decimales = False
+                    fin_numero = col  # Guardar posicion final del numero valido
+                    
+                    # Consumir digitos de la parte entera
+                    while col < len(linea) and linea[col].isdigit():
                         col += 1
+                    fin_numero = col  # Fin de la parte entera
+                    
+                    # Verificar si hay punto decimal
+                    if col < len(linea) and linea[col] == '.':
+                        col += 1
+                        
+                        # Verificar si hay digitos despues del punto
+                        if col < len(linea) and linea[col].isdigit():
+                            tiene_punto = True
+                            tiene_decimales = True
+                            # Consumir digitos decimales
+                            while col < len(linea) and linea[col].isdigit():
+                                col += 1
+                            fin_numero = col  # Fin del numero real completo
+                        else:
+                            # Punto sin digitos despues -> es error
+                            tiene_punto = True
+                            tiene_decimales = False
+                            # fin_numero queda en la parte entera (antes del punto)
+                    
+                    # Verificar si hay letras despues del numero
                     if col < len(linea) and (linea[col].isalpha() or linea[col] == '_'):
-                        while col < len(linea) and (linea[col].isalnum() or linea[col] == '_'):
-                            col += 1
+                        if tiene_punto and tiene_decimales:
+                            # Caso "32.0algo": el numero real es valido
+                            # Guardamos el numero real hasta fin_numero
+                            tokens.append({"no": num_token, "token": linea[inicio:fin_numero],
+                                           "tipo": "NUMERO_REAL", "linea": num_linea, "columna": inicio+1})
+                            num_token += 1
+                            # Retrocedemos col para que las letras se procesen como identificador
+                            col = fin_numero
+                        elif tiene_punto and not tiene_decimales:
+                            # Caso "32.algo": error por punto sin decimales
+                            # El error incluye hasta el punto (col esta despues del punto)
+                            errores.append({"linea": num_linea, "columna": inicio+1,
+                                            "tipo": "Error Lexico",
+                                            "descripcion": f"Numero mal formado: {linea[inicio:col]}"})
+                            # col ya esta en la letra, se procesara como identificador
+                        else:
+                            # Caso "123abc": error por identificador que empieza con digito
+                            while col < len(linea) and (linea[col].isalnum() or linea[col] == '_'):
+                                col += 1
+                            errores.append({"linea": num_linea, "columna": inicio+1,
+                                            "tipo": "Error Lexico",
+                                            "descripcion": f"Identificador no valido (empieza con digito): {linea[inicio:col]}"})
+                    elif tiene_punto and not tiene_decimales:
+                        # Caso "32." solo: error
                         errores.append({"linea": num_linea, "columna": inicio+1,
                                         "tipo": "Error Lexico",
-                                        "descripcion": f"Identificador no valido (empieza con digito): {linea[inicio:col]}"})
+                                        "descripcion": f"Numero mal formado: {linea[inicio:col]}"})
                     else:
+                        # Numero valido (entero o real)
                         tipo_num = "NUMERO_REAL" if tiene_punto else "NUMERO_ENTERO"
-                        tokens.append({"no": num_token, "token": linea[inicio:col],
+                        tokens.append({"no": num_token, "token": linea[inicio:fin_numero],
                                        "tipo": tipo_num, "linea": num_linea, "columna": inicio+1})
                         num_token += 1
                     continue

@@ -102,7 +102,7 @@ import re
 # Palabras reservadas del lenguaje
 PALABRAS_RESERVADAS = {
     "if", "else", "end", "do", "while", "switch", "case",
-    "int", "float", "main", "cin", "cout"
+    "int", "float", "main", "cin", "cout", "until"
 }
 
 # Operadores aritmeticos
@@ -163,13 +163,14 @@ def analisis_lexico(codigo):
     Clasificacion de tokens segun el PDF:
         - NUMERO_ENTERO / NUMERO_REAL          (Color 1)
         - IDENTIFICADOR                         (Color 2)
-        - COMENTARIO                            (Color 3)
         - PALABRA_RESERVADA                     (Color 4)
         - OPERADOR_ARITMETICO                   (Color 5)
         - OPERADOR_RELACIONAL / OPERADOR_LOGICO (Color 6)
         - SIMBOLO                               (sin color especifico)
         - ASIGNACION                            (sin color especifico)
         - CADENA / CARACTER                     (cadenas y caracteres)
+    
+    NOTA: Los comentarios se omiten completamente de la tabla de tokens.
     
     Args:
         codigo: String con el codigo fuente a analizar
@@ -196,6 +197,9 @@ def analisis_lexico(codigo):
     comentario_bloque_inicio_linea = 0
     comentario_bloque_inicio_col = 0
     
+    # Estado para operadores pendientes que pueden combinarse entre lineas
+    operador_pendiente = None  # {'char': '=', 'linea': X, 'columna': Y}
+    
     num_linea = 0
     
     while num_linea < total_lineas:
@@ -208,34 +212,16 @@ def analisis_lexico(codigo):
             
             # =================================================================
             # ESTADO: Dentro de comentario de bloque /* ... */
+            # Los comentarios NO se agregan a la tabla de tokens (se omiten)
             # =================================================================
             if en_comentario_bloque:
                 cierre_idx = linea.find("*/", col)
                 if cierre_idx != -1:
                     # El comentario se cierra en esta linea
-                    texto_com = linea[col:cierre_idx + 2]
-                    tokens.append({
-                        "no": num_token,
-                        "token": texto_com,
-                        "tipo": "COMENTARIO",
-                        "linea": num_linea,
-                        "columna": col + 1
-                    })
-                    num_token += 1
                     col = cierre_idx + 2
                     en_comentario_bloque = False
                 else:
                     # El comentario continua en la siguiente linea
-                    if col < len(linea):
-                        texto_com = linea[col:]
-                        tokens.append({
-                            "no": num_token,
-                            "token": texto_com,
-                            "tipo": "COMENTARIO",
-                            "linea": num_linea,
-                            "columna": col + 1
-                        })
-                        num_token += 1
                     break  # Pasar a la siguiente linea
                 continue
             
@@ -247,20 +233,105 @@ def analisis_lexico(codigo):
                 continue
             
             # =================================================================
-            # RECONOCIMIENTO DE COMENTARIOS
+            # VERIFICAR OPERADOR PENDIENTE (para combinar entre lineas)
+            # =================================================================
+            if operador_pendiente is not None:
+                pending_char = operador_pendiente['char']
+                # Intentar combinar con el caracter actual
+                doble = pending_char + ch
+                
+                if doble in OPERADORES_RELACIONALES_DOBLES:
+                    tokens.append({
+                        "no": num_token,
+                        "token": doble,
+                        "tipo": "OPERADOR_RELACIONAL",
+                        "linea": operador_pendiente['linea'],
+                        "columna": operador_pendiente['columna']
+                    })
+                    num_token += 1
+                    col += 1
+                    operador_pendiente = None
+                    continue
+                elif doble in OPERADORES_ARITMETICOS_DOBLES:
+                    tokens.append({
+                        "no": num_token,
+                        "token": doble,
+                        "tipo": "OPERADOR_ARITMETICO",
+                        "linea": operador_pendiente['linea'],
+                        "columna": operador_pendiente['columna']
+                    })
+                    num_token += 1
+                    col += 1
+                    operador_pendiente = None
+                    continue
+                elif doble in OPERADORES_LOGICOS_DOBLES:
+                    tokens.append({
+                        "no": num_token,
+                        "token": doble,
+                        "tipo": "OPERADOR_LOGICO",
+                        "linea": operador_pendiente['linea'],
+                        "columna": operador_pendiente['columna']
+                    })
+                    num_token += 1
+                    col += 1
+                    operador_pendiente = None
+                    continue
+                else:
+                    # No se puede combinar, emitir el operador pendiente como token simple
+                    if pending_char == '=':
+                        tokens.append({
+                            "no": num_token,
+                            "token": pending_char,
+                            "tipo": "ASIGNACION",
+                            "linea": operador_pendiente['linea'],
+                            "columna": operador_pendiente['columna']
+                        })
+                        num_token += 1
+                    elif pending_char in OPERADORES_ARITMETICOS_SIMPLES:
+                        tokens.append({
+                            "no": num_token,
+                            "token": pending_char,
+                            "tipo": "OPERADOR_ARITMETICO",
+                            "linea": operador_pendiente['linea'],
+                            "columna": operador_pendiente['columna']
+                        })
+                        num_token += 1
+                    elif pending_char in OPERADORES_RELACIONALES_SIMPLES:
+                        tokens.append({
+                            "no": num_token,
+                            "token": pending_char,
+                            "tipo": "OPERADOR_RELACIONAL",
+                            "linea": operador_pendiente['linea'],
+                            "columna": operador_pendiente['columna']
+                        })
+                        num_token += 1
+                    elif pending_char in OPERADORES_LOGICOS_SIMPLES:
+                        tokens.append({
+                            "no": num_token,
+                            "token": pending_char,
+                            "tipo": "OPERADOR_LOGICO",
+                            "linea": operador_pendiente['linea'],
+                            "columna": operador_pendiente['columna']
+                        })
+                        num_token += 1
+                    elif pending_char == '&' or pending_char == '|':
+                        # Operador logico incompleto
+                        errores.append({
+                            "linea": operador_pendiente['linea'],
+                            "columna": operador_pendiente['columna'],
+                            "tipo": "Error Lexico",
+                            "descripcion": f"Operador incompleto: '{pending_char}' (se esperaba '{pending_char}{pending_char}')"
+                        })
+                    operador_pendiente = None
+                    # No incrementar col, procesar el caracter actual normalmente
+            
+            # =================================================================
+            # RECONOCIMIENTO DE COMENTARIOS (se omiten de la tabla de tokens)
             # =================================================================
             
             # Comentario de una linea: //
             if col + 1 < len(linea) and linea[col:col + 2] == '//':
-                texto_com = linea[col:]
-                tokens.append({
-                    "no": num_token,
-                    "token": texto_com,
-                    "tipo": "COMENTARIO",
-                    "linea": num_linea,
-                    "columna": col + 1
-                })
-                num_token += 1
+                # Omitir el resto de la linea (comentario) - NO agregar token
                 break  # El resto de la linea es comentario
             
             # Comentario de bloque: /* ... */
@@ -270,28 +341,10 @@ def analisis_lexico(codigo):
                 cierre_idx = linea.find("*/", col + 2)
                 
                 if cierre_idx != -1:
-                    # El comentario se cierra en la misma linea
-                    texto_com = linea[col:cierre_idx + 2]
-                    tokens.append({
-                        "no": num_token,
-                        "token": texto_com,
-                        "tipo": "COMENTARIO",
-                        "linea": num_linea,
-                        "columna": col + 1
-                    })
-                    num_token += 1
+                    # El comentario se cierra en la misma linea - NO agregar token
                     col = cierre_idx + 2
                 else:
                     # El comentario continua en las siguientes lineas
-                    texto_com = linea[col:]
-                    tokens.append({
-                        "no": num_token,
-                        "token": texto_com,
-                        "tipo": "COMENTARIO",
-                        "linea": num_linea,
-                        "columna": col + 1
-                    })
-                    num_token += 1
                     en_comentario_bloque = True
                     break  # Pasar a la siguiente linea
                 continue
@@ -374,11 +427,15 @@ def analisis_lexico(codigo):
             # RECONOCIMIENTO DE NUMEROS (enteros y reales)
             # Automata: q0 -digito-> q1 -digito-> q1
             #           q1 -punto-> q2 -digito-> q3 -digito-> q3
+            # 
+            # Casos manejados:
+            # 1. "32.algo" -> "32." es error (punto sin digitos), "algo" es identificador
+            # 2. "32.0algo" -> "32.0" es NUMERO_REAL valido, "algo" es IDENTIFICADOR
+            # 3. "34.35.36.37" -> "34.35" es real, "." es error, "36.37" es real
+            # 4. "123abc" -> error (identificador que empieza con digito)
             # =================================================================
             if ch.isdigit():
                 inicio = col
-                tiene_punto = False
-                es_valido = True
                 
                 # Consumir digitos de la parte entera
                 while col < len(linea) and linea[col].isdigit():
@@ -386,37 +443,96 @@ def analisis_lexico(codigo):
                 
                 # Verificar si hay punto decimal
                 if col < len(linea) and linea[col] == '.':
+                    pos_punto = col
                     # Verificar que despues del punto haya digitos
                     if col + 1 < len(linea) and linea[col + 1].isdigit():
-                        tiene_punto = True
+                        # Tenemos un numero real valido (hasta ahora)
                         col += 1  # Consumir el punto
                         # Consumir digitos de la parte decimal
                         while col < len(linea) and linea[col].isdigit():
                             col += 1
-                    # Si no hay digitos despues del punto, no lo consumimos
-                    # El punto se procesara como caracter no reconocido o sera parte de otro token
+                        
+                        # El numero real es valido (tiene digitos despues del punto)
+                        # Si sigue una letra, el numero real es valido y las letras
+                        # se procesaran como identificador separado en la siguiente iteracion
+                        # Ejemplo: "32.0algo" -> "32.0" es NUMERO_REAL, "algo" es IDENTIFICADOR
+                        tokens.append({
+                            "no": num_token,
+                            "token": linea[inicio:col],
+                            "tipo": "NUMERO_REAL",
+                            "linea": num_linea,
+                            "columna": inicio + 1
+                        })
+                        num_token += 1
+                        # NO consumir las letras que sigan, se procesaran como identificador
+                    else:
+                        # Caso "32." o "32.algo" - el punto no tiene digitos despues
+                        # Solo marcar "32." como error (digitos + punto)
+                        texto_error = linea[inicio:pos_punto + 1]  # "32."
+                        col = pos_punto + 1  # Posicionar despues del punto
+                        
+                        errores.append({
+                            "linea": num_linea,
+                            "columna": inicio + 1,
+                            "tipo": "Error Lexico",
+                            "descripcion": f"Numero mal formado: {texto_error}"
+                        })
+                        # NO consumir lo que sigue (puede ser identificador como "algo")
+                else:
+                    # No hay punto, verificar si es un numero entero valido
+                    # Verificar que no siga una letra o guion bajo (error: 123abc)
+                    if col < len(linea) and (linea[col].isalpha() or linea[col] == '_'):
+                        inicio_err = col
+                        while col < len(linea) and (linea[col].isalnum() or linea[col] == '_'):
+                            col += 1
+                        errores.append({
+                            "linea": num_linea,
+                            "columna": inicio + 1,
+                            "tipo": "Error Lexico",
+                            "descripcion": f"Identificador no valido (empieza con digito): {linea[inicio:col]}"
+                        })
+                    else:
+                        # Numero entero valido
+                        tokens.append({
+                            "no": num_token,
+                            "token": linea[inicio:col],
+                            "tipo": "NUMERO_ENTERO",
+                            "linea": num_linea,
+                            "columna": inicio + 1
+                        })
+                        num_token += 1
+                continue
+            
+            # =================================================================
+            # RECONOCIMIENTO DE PUNTO SUELTO
+            # Caso: despues de un real como 34.35.36.37
+            # El "." entre 35 y 36 es error, y 36.37 debe procesarse como real
+            # =================================================================
+            if ch == '.':
+                inicio = col
+                col += 1
                 
-                # Verificar que no siga una letra o guion bajo (error: 123abc)
-                if col < len(linea) and (linea[col].isalpha() or linea[col] == '_'):
-                    inicio_err = col
-                    while col < len(linea) and (linea[col].isalnum() or linea[col] == '_'):
-                        col += 1
+                # Verificar si despues del punto hay digitos
+                if col < len(linea) and linea[col].isdigit():
+                    # Es un punto seguido de digitos - esto es un error
+                    # Pero solo marcamos el punto como error, no consumimos los digitos
+                    # Los digitos se procesaran en la siguiente iteracion como un numero
                     errores.append({
                         "linea": num_linea,
                         "columna": inicio + 1,
                         "tipo": "Error Lexico",
-                        "descripcion": f"Identificador no valido (empieza con digito): {linea[inicio:col]}"
+                        "descripcion": f"Numero mal formado (punto inicial): ."
                     })
+                    # col ya esta posicionado despues del punto
+                    # Los digitos se procesaran como numero en la siguiente iteracion
                 else:
-                    tipo_num = "NUMERO_REAL" if tiene_punto else "NUMERO_ENTERO"
-                    tokens.append({
-                        "no": num_token,
-                        "token": linea[inicio:col],
-                        "tipo": tipo_num,
+                    # Punto suelto sin digitos - caracter no reconocido
+                    errores.append({
                         "linea": num_linea,
-                        "columna": inicio + 1
+                        "columna": inicio + 1,
+                        "tipo": "Error Lexico",
+                        "descripcion": f"Caracter no reconocido: '.' (ASCII: {ord('.')})"
                     })
-                    num_token += 1
                 continue
             
             # =================================================================
@@ -504,55 +620,68 @@ def analisis_lexico(codigo):
             
             # =================================================================
             # RECONOCIMIENTO DE OPERADORES SIMPLES (1 caracter)
+            # Para operadores que pueden formar dobles, guardar como pendiente
             # =================================================================
             
-            # Operadores aritmeticos simples: + - * / % ^
-            if ch in OPERADORES_ARITMETICOS_SIMPLES:
+            # Caracteres que pueden formar operadores dobles
+            puede_ser_doble = {'+', '-', '<', '>', '=', '!', '&', '|'}
+            
+            if ch in puede_ser_doble:
+                # Verificar si el siguiente caracter (en la misma linea) completa un operador doble
+                if col + 1 < len(linea):
+                    siguiente = linea[col + 1]
+                    doble = ch + siguiente
+                    
+                    if doble in OPERADORES_ARITMETICOS_DOBLES:
+                        tokens.append({
+                            "no": num_token,
+                            "token": doble,
+                            "tipo": "OPERADOR_ARITMETICO",
+                            "linea": num_linea,
+                            "columna": col + 1
+                        })
+                        num_token += 1
+                        col += 2
+                        continue
+                    elif doble in OPERADORES_RELACIONALES_DOBLES:
+                        tokens.append({
+                            "no": num_token,
+                            "token": doble,
+                            "tipo": "OPERADOR_RELACIONAL",
+                            "linea": num_linea,
+                            "columna": col + 1
+                        })
+                        num_token += 1
+                        col += 2
+                        continue
+                    elif doble in OPERADORES_LOGICOS_DOBLES:
+                        tokens.append({
+                            "no": num_token,
+                            "token": doble,
+                            "tipo": "OPERADOR_LOGICO",
+                            "linea": num_linea,
+                            "columna": col + 1
+                        })
+                        num_token += 1
+                        col += 2
+                        continue
+                
+                # No hay siguiente caracter en la linea o no forma operador doble
+                # Guardar como pendiente para verificar en la siguiente linea
+                operador_pendiente = {
+                    'char': ch,
+                    'linea': num_linea,
+                    'columna': col + 1
+                }
+                col += 1
+                continue
+            
+            # Operadores aritmeticos simples que NO forman dobles: * / % ^
+            if ch in {'*', '/', '%', '^'}:
                 tokens.append({
                     "no": num_token,
                     "token": ch,
                     "tipo": "OPERADOR_ARITMETICO",
-                    "linea": num_linea,
-                    "columna": col + 1
-                })
-                num_token += 1
-                col += 1
-                continue
-            
-            # Operadores relacionales simples: < >
-            if ch in OPERADORES_RELACIONALES_SIMPLES:
-                tokens.append({
-                    "no": num_token,
-                    "token": ch,
-                    "tipo": "OPERADOR_RELACIONAL",
-                    "linea": num_linea,
-                    "columna": col + 1
-                })
-                num_token += 1
-                col += 1
-                continue
-            
-            # Operador logico simple: ! (not)
-            if ch in OPERADORES_LOGICOS_SIMPLES:
-                tokens.append({
-                    "no": num_token,
-                    "token": ch,
-                    "tipo": "OPERADOR_LOGICO",
-                    "linea": num_linea,
-                    "columna": col + 1
-                })
-                num_token += 1
-                col += 1
-                continue
-            
-            # =================================================================
-            # RECONOCIMIENTO DE ASIGNACION: =
-            # =================================================================
-            if ch == '=':
-                tokens.append({
-                    "no": num_token,
-                    "token": ch,
-                    "tipo": "ASIGNACION",
                     "linea": num_linea,
                     "columna": col + 1
                 })
@@ -585,6 +714,65 @@ def analisis_lexico(codigo):
                 "descripcion": f"Caracter no reconocido: '{ch}' (ASCII: {ord(ch)})"
             })
             col += 1
+    
+    # =========================================================================
+    # PROCESAR OPERADOR PENDIENTE AL FINAL DEL ARCHIVO
+    # =========================================================================
+    if operador_pendiente is not None:
+        pending_char = operador_pendiente['char']
+        if pending_char == '=':
+            tokens.append({
+                "no": num_token,
+                "token": pending_char,
+                "tipo": "ASIGNACION",
+                "linea": operador_pendiente['linea'],
+                "columna": operador_pendiente['columna']
+            })
+            num_token += 1
+        elif pending_char in OPERADORES_ARITMETICOS_SIMPLES:
+            tokens.append({
+                "no": num_token,
+                "token": pending_char,
+                "tipo": "OPERADOR_ARITMETICO",
+                "linea": operador_pendiente['linea'],
+                "columna": operador_pendiente['columna']
+            })
+            num_token += 1
+        elif pending_char in OPERADORES_RELACIONALES_SIMPLES:
+            tokens.append({
+                "no": num_token,
+                "token": pending_char,
+                "tipo": "OPERADOR_RELACIONAL",
+                "linea": operador_pendiente['linea'],
+                "columna": operador_pendiente['columna']
+            })
+            num_token += 1
+        elif pending_char in OPERADORES_LOGICOS_SIMPLES:
+            tokens.append({
+                "no": num_token,
+                "token": pending_char,
+                "tipo": "OPERADOR_LOGICO",
+                "linea": operador_pendiente['linea'],
+                "columna": operador_pendiente['columna']
+            })
+            num_token += 1
+        elif pending_char == '&' or pending_char == '|':
+            errores.append({
+                "linea": operador_pendiente['linea'],
+                "columna": operador_pendiente['columna'],
+                "tipo": "Error Lexico",
+                "descripcion": f"Operador incompleto: '{pending_char}' (se esperaba '{pending_char}{pending_char}')"
+            })
+        elif pending_char == '+' or pending_char == '-':
+            tokens.append({
+                "no": num_token,
+                "token": pending_char,
+                "tipo": "OPERADOR_ARITMETICO",
+                "linea": operador_pendiente['linea'],
+                "columna": operador_pendiente['columna']
+            })
+            num_token += 1
+        operador_pendiente = None
     
     # =========================================================================
     # VERIFICACION FINAL: Comentario de bloque sin cerrar
@@ -620,15 +808,12 @@ def analisis_sintactico(codigo):
     resultado = analisis_lexico(codigo)
     tokens = resultado["tokens"]
     
-    # Filtrar comentarios para el arbol sintactico
-    tokens_sin_comentarios = [t for t in tokens if t["tipo"] != "COMENTARIO"]
-    
     # Generar arbol sintactico basico agrupando por sentencias
     hijos = []
     sentencia = []
     num = 1
     
-    for tok in tokens_sin_comentarios:
+    for tok in tokens:
         sentencia.append(tok)
         if tok["token"] in (";", "{", "}"):
             hijos.append({
@@ -711,23 +896,20 @@ def generar_intermedio(codigo):
     resultado = analisis_semantico(codigo)
     tokens = resultado["tokens"]
     
-    # Filtrar comentarios
-    tokens_util = [t for t in tokens if t["tipo"] != "COMENTARIO"]
-    
     lineas_ci = []
     temp = 0
     i = 0
     
-    while i < len(tokens_util):
+    while i < len(tokens):
         # Patron de asignacion: id = expr ;
-        if (i + 2 < len(tokens_util)
-                and tokens_util[i]["tipo"] == "IDENTIFICADOR"
-                and tokens_util[i + 1]["token"] == "="):
-            var = tokens_util[i]["token"]
+        if (i + 2 < len(tokens)
+                and tokens[i]["tipo"] == "IDENTIFICADOR"
+                and tokens[i + 1]["token"] == "="):
+            var = tokens[i]["token"]
             j = i + 2
             expr = []
-            while j < len(tokens_util) and tokens_util[j]["token"] != ";":
-                expr.append(tokens_util[j]["token"])
+            while j < len(tokens) and tokens[j]["token"] != ";":
+                expr.append(tokens[j]["token"])
                 j += 1
             if len(expr) >= 3:
                 t = f"t{temp}"
@@ -740,17 +922,17 @@ def generar_intermedio(codigo):
             continue
         
         # Patron de entrada/salida: cout/cin
-        if (tokens_util[i]["token"] in ("cout", "cin")
-                and i + 1 < len(tokens_util)):
+        if (tokens[i]["token"] in ("cout", "cin")
+                and i + 1 < len(tokens)):
             j = i + 1
             args = []
-            while j < len(tokens_util) and tokens_util[j]["token"] != ";":
-                if tokens_util[j]["token"] not in ("<<", ">>", ","):
-                    args.append(tokens_util[j]["token"])
+            while j < len(tokens) and tokens[j]["token"] != ";":
+                if tokens[j]["token"] not in ("<<", ">>", ","):
+                    args.append(tokens[j]["token"])
                 j += 1
             for a in args:
                 lineas_ci.append(f"  param {a}")
-            lineas_ci.append(f"  call {tokens_util[i]['token']}, {len(args)}")
+            lineas_ci.append(f"  call {tokens[i]['token']}, {len(args)}")
             i = j + 1
             continue
         
