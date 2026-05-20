@@ -1,0 +1,18 @@
+main {
+  int contador;
+  float total;
+
+  contador = 0;
+  total = 1.5;
+
+  while contador < 3
+    total = total + contador;
+    contador = contador + 1;
+  end
+
+  do
+    total = total * 2;
+  while total < 50
+
+  cout << total << " listo";
+}

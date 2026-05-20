@@ -1,0 +1,25 @@
+main {
+  int a, b;
+
+  a = 1;
+  b = 2;
+
+  a+
+
+  +;
+  b-
+
+  -;
+
+  if a =
+
+  = b then
+    cout <
+
+    < "iguales";
+  else
+    cin >
+
+    > a;
+  end
+}

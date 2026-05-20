@@ -1,0 +1,16 @@
+main {
+  int x, y;
+  float promedio;
+  bool activo;
+
+  x = 10;
+  y = x + 5 * 2;
+  promedio = (y + 3.5) / 2;
+  activo = true;
+
+  if y >= 10 then
+    cout << "valor de y" << y;
+  else
+    cin >> x;
+  end
+}

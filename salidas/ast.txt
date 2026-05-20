@@ -1,0 +1,175 @@
+Programa
+  ListaDeclaracion
+    Expresion
+      SentExpresion
+        Identificador: sum [id]
+    Expresion
+      SentExpresion
+        Identificador: r [id]
+    Expresion
+      SentExpresion
+        Identificador: real [id]
+    Expresion
+      SentExpresion
+        Identificador: a [id]
+    Asignacion
+      Identificador: suma [id]
+      SentExpresion
+        Numero: 45 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        Numero: 32.32 [NUMERO_REAL]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        Numero: 23 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: y [id]
+      SentExpresion
+        OperacionSuma: - [suma_op]
+          OperacionSuma: + [suma_op]
+            Numero: 2 [NUMERO_ENTERO]
+            Numero: 3 [NUMERO_ENTERO]
+          Numero: 1 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: z [id]
+      SentExpresion
+        OperacionSuma: + [suma_op]
+          Identificador: y [id]
+          Numero: 7 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: y [id]
+      SentExpresion
+        OperacionSuma: + [suma_op]
+          Identificador: y [id]
+          Numero: 1 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: a [id]
+      SentExpresion
+        OperacionSuma: - [suma_op]
+          OperacionSuma: + [suma_op]
+            OperacionSuma: - [suma_op]
+              OperacionSuma: + [suma_op]
+                Numero: 24.0 [NUMERO_REAL]
+                Numero: 4 [NUMERO_ENTERO]
+              OperacionMultiplicacion: * [mult_op]
+                OperacionMultiplicacion: / [mult_op]
+                  Numero: 1 [NUMERO_ENTERO]
+                  Numero: 3 [NUMERO_ENTERO]
+                Numero: 2 [NUMERO_ENTERO]
+            Numero: 34 [NUMERO_ENTERO]
+          Numero: 1 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        OperacionMultiplicacion: * [mult_op]
+          Grupo
+            OperacionSuma: - [suma_op]
+              Numero: 5 [NUMERO_ENTERO]
+              Numero: 3 [NUMERO_ENTERO]
+          Grupo
+            OperacionMultiplicacion: / [mult_op]
+              Numero: 8 [NUMERO_ENTERO]
+              Numero: 2 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: y [id]
+      SentExpresion
+        OperacionSuma: - [suma_op]
+          OperacionSuma: - [suma_op]
+            OperacionSuma: + [suma_op]
+              Numero: 5 [NUMERO_ENTERO]
+              Numero: 3 [NUMERO_ENTERO]
+            OperacionMultiplicacion: / [mult_op]
+              OperacionMultiplicacion: * [mult_op]
+                Numero: 2 [NUMERO_ENTERO]
+                Numero: 4 [NUMERO_ENTERO]
+              Numero: 7 [NUMERO_ENTERO]
+          Numero: 9 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: z [id]
+      SentExpresion
+        OperacionSuma: + [suma_op]
+          OperacionMultiplicacion: / [mult_op]
+            Numero: 8 [NUMERO_ENTERO]
+            Numero: 2 [NUMERO_ENTERO]
+          OperacionMultiplicacion: * [mult_op]
+            Numero: 15 [NUMERO_ENTERO]
+            Numero: 4 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: y [id]
+      SentExpresion
+        Numero: 14.54 [NUMERO_REAL]
+    Seleccion
+      Grupo
+        OperacionRelacional: > [rel_op]
+          Numero: 2 [NUMERO_ENTERO]
+          Numero: 3 [NUMERO_ENTERO]
+      Then
+        ListaDeclaracion
+          Asignacion
+            Identificador: y [id]
+            SentExpresion
+              OperacionSuma: + [suma_op]
+                Identificador: a [id]
+                Numero: 3 [NUMERO_ENTERO]
+      Else
+        ListaDeclaracion
+          Seleccion
+            Grupo
+              OperacionRelacional: > [rel_op]
+                Numero: 4 [NUMERO_ENTERO]
+                Numero: 2 [NUMERO_ENTERO]
+            Then
+              ListaDeclaracion
+            Else
+              ListaDeclaracion
+                Asignacion
+                  Identificador: b [id]
+                  SentExpresion
+                    Numero: 5.0 [NUMERO_REAL]
+          Asignacion
+            Identificador: y [id]
+            SentExpresion
+              OperacionSuma: + [suma_op]
+                Identificador: y [id]
+                Numero: 1 [NUMERO_ENTERO]
+    Expresion
+      SentExpresion
+        OperacionIncremento: ++ [suma_op]
+          Identificador: a [id]
+    Expresion
+      SentExpresion
+        OperacionIncremento: -- [suma_op]
+          Identificador: c [id]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        OperacionSuma: + [suma_op]
+          Numero: 3 [NUMERO_ENTERO]
+          Numero: 4 [NUMERO_ENTERO]
+    RepeticionDoWhile
+      ListaDeclaracion
+        Asignacion
+          Identificador: y [id]
+          SentExpresion
+            OperacionSuma: + [suma_op]
+              OperacionMultiplicacion: * [mult_op]
+                Grupo
+                  OperacionSuma: + [suma_op]
+                    Identificador: y [id]
+                    Numero: 1 [NUMERO_ENTERO]
+                Numero: 2 [NUMERO_ENTERO]
+              Numero: 1 [NUMERO_ENTERO]
+      Grupo
+        OperacionRelacional: > [rel_op]
+          Identificador: x [id]
+          Numero: 7 [NUMERO_ENTERO]
+    Entrada
+      Identificador: x [id]
+    Asignacion
+      Identificador: mas [id]
+      SentExpresion
+        OperacionMultiplicacion: / [mult_op]
+          Numero: 36 [NUMERO_ENTERO]
+          Numero: 7 [NUMERO_ENTERO]

@@ -1,0 +1,15 @@
+main {
+  int x, ;
+  float y
+
+  x = 5 + ;
+
+  if x > then
+    cout << "x";
+  else
+    cin > y;
+  end
+
+  while x < 10
+    x = x + 1;
+}

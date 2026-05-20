@@ -1,0 +1,15 @@
+Error Sintactico - Linea 1, Columna 6: Se esperaba '{' despues de main
+Error Sintactico - Linea 1, Columna 10: Falta ';' al final de la expresion
+Error Sintactico - Linea 1, Columna 12: Falta ';' al final de la expresion
+Error Sintactico - Linea 1, Columna 12: Sentencia no valida cerca de '3.14'
+Error Sintactico - Linea 5, Columna 6: Falta ';' al final de la expresion
+Error Sintactico - Linea 5, Columna 7: Falta ';' al final de la expresion
+Error Sintactico - Linea 5, Columna 7: Sentencia no valida cerca de ','
+Error Sintactico - Linea 20, Columna 14: Se esperaba ')' para cerrar la expresion
+Error Sintactico - Linea 20, Columna 14: Se esperaba 'then' en la sentencia if
+Error Sintactico - Linea 20, Columna 14: Sentencia no valida cerca de '&&'
+Error Sintactico - Linea 24, Columna 11: Sentencia no valida cerca de ';'
+Error Sintactico - Linea 26, Columna 4: Sentencia no valida cerca de ';'
+Error Sintactico - Linea 34, Columna 14: Sentencia no valida cerca de '{'
+Error Sintactico - Linea 35, Columna 9: Se esperaba operador de entrada '>>'
+Error Sintactico - Linea 37, Columna 5: Hay tokens despues del cierre del programa

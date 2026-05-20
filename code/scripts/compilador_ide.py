@@ -1,4 +1,4 @@
-"""
+﻿"""
 IDE para Compilador - Entorno de Desarrollo Integrado
 =====================================================
 Interfaz grafica modular que invoca a un compilador externo.
@@ -34,25 +34,25 @@ class Colores:
     FONDO_PRINCIPAL     = "#1b1f24"   # Fondo del editor (gris azulado oscuro)
     FONDO_PANEL         = "#161a1e"   # Paneles
     FONDO_BARRA         = "#121519"   # Barras
-    FONDO_LINEA_NUM     = "#1b1f24"   # Fondo números de línea
-    FONDO_LINEA_ACTUAL  = "#242a30"   # Línea actual
+    FONDO_LINEA_NUM     = "#1b1f24"   # Fondo nÃºmeros de lÃ­nea
+    FONDO_LINEA_ACTUAL  = "#242a30"   # LÃ­nea actual
 
     TEXTO               = "#d0d7de"   # Texto principal
     TEXTO_SECUNDARIO    = "#9aa4ad"   # Texto secundario
-    TEXTO_LINEA_NUM     = "#6e7681"   # Números de línea
+    TEXTO_LINEA_NUM     = "#6e7681"   # NÃºmeros de lÃ­nea
 
     ACENTO              = "#4f7cff"   # Azul sobrio
     ACENTO_HOVER        = "#6b8cff"
 
-    VERDE               = "#5fb3a2"   # Éxito / tokens válidos
+    VERDE               = "#5fb3a2"   # Ã‰xito / tokens vÃ¡lidos
     AMARILLO            = "#c9b458"   # Advertencias
     ROJO                = "#d16969"   # Errores
-    NARANJA             = "#d7a55f"   # Números / constantes
+    NARANJA             = "#d7a55f"   # NÃºmeros / constantes
     ROSA                = "#c586c0"   # Strings
     LAVANDA             = "#8aa3ff"   # Keywords
 
     BORDE               = "#2a2f36"   # Bordes
-    SELECCION           = "#30363d"   # Selección
+    SELECCION           = "#30363d"   # SelecciÃ³n
     TAB_ACTIVO          = "#1b1f24"   # Tab activo
     TAB_INACTIVO        = "#161a1e"   # Tab inactivo
 
@@ -739,25 +739,16 @@ class VentanaPrincipal(QMainWindow):
 
         # Tab: Sintactico
         self.arbol_sintactico = QTreeWidget()
-        self.arbol_sintactico.setHeaderLabels(["Nodo", "Valor", "Tipo"])
+        self.arbol_sintactico.setColumnCount(1)
+        self.arbol_sintactico.setHeaderLabels(["Arbol Sintactico Abstracto"])
         self.arbol_sintactico.setAlternatingRowColors(False)
+        self.arbol_sintactico.setWordWrap(False)
+        self.arbol_sintactico.setTextElideMode(Qt.TextElideMode.ElideNone)
+        self.arbol_sintactico.header().setStretchLastSection(True)
+        self.arbol_sintactico.header().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.ResizeToContents
+        )
         self.tabs_derecho.addTab(self.arbol_sintactico, "Sintactico")
-
-        # Tab: Semantico
-        self.tabla_semantico = crear_tabla(
-            ["No.", "Expresion", "Tipo Esperado", "Tipo Encontrado", "Estado"]
-        )
-        self.tabs_derecho.addTab(self.tabla_semantico, "Semantico")
-
-        # Tab: Codigo Intermedio
-        self.texto_codigo_intermedio = QPlainTextEdit()
-        self.texto_codigo_intermedio.setReadOnly(True)
-        fuente_ci = QFont("Consolas", 12)
-        fuente_ci.setStyleHint(QFont.StyleHint.Monospace)
-        self.texto_codigo_intermedio.setFont(fuente_ci)
-        self.tabs_derecho.addTab(
-            self.texto_codigo_intermedio, "Codigo Intermedio"
-        )
 
         # Tab: Tabla de Simbolos
         self.tabla_simbolos = crear_tabla(
@@ -788,13 +779,7 @@ class VentanaPrincipal(QMainWindow):
             self.tabla_err_sintactico, "Errores Sintacticos"
         )
 
-        # Tab: Errores Semanticos
-        self.tabla_err_semantico = crear_panel_errores()
-        self.tabs_inferior.addTab(
-            self.tabla_err_semantico, "Errores Semanticos"
-        )
-
-        # Tab: Resultados de Ejecucion
+        # Tab: Resultados generales
         self.texto_resultados = QPlainTextEdit()
         self.texto_resultados.setReadOnly(True)
         fuente_res = QFont("Consolas", 12)
@@ -861,31 +846,10 @@ class VentanaPrincipal(QMainWindow):
         # ===== Menu Compilar =====
         menu_compilar = barra.addMenu("Compilar")
 
-        self.act_lexico = QAction("Analisis Lexico", self)
-        self.act_lexico.setShortcut(QKeySequence("F5"))
-        self.act_lexico.triggered.connect(self.ejecutar_lexico)
-
-        self.act_sintactico = QAction("Analisis Sintactico", self)
-        self.act_sintactico.setShortcut(QKeySequence("F6"))
-        self.act_sintactico.triggered.connect(self.ejecutar_sintactico)
-
-        self.act_semantico = QAction("Analisis Semantico", self)
-        self.act_semantico.setShortcut(QKeySequence("F7"))
-        self.act_semantico.triggered.connect(self.ejecutar_semantico)
-
-        self.act_intermedio = QAction("Codigo Intermedio", self)
-        self.act_intermedio.setShortcut(QKeySequence("F8"))
-        self.act_intermedio.triggered.connect(self.ejecutar_intermedio)
-
         self.act_ejecutar = QAction("Ejecutar", self)
-        self.act_ejecutar.setShortcut(QKeySequence("F9"))
-        self.act_ejecutar.triggered.connect(self.ejecutar_programa)
+        self.act_ejecutar.setShortcut(QKeySequence("F5"))
+        self.act_ejecutar.triggered.connect(self.ejecutar_analisis)
 
-        menu_compilar.addAction(self.act_lexico)
-        menu_compilar.addAction(self.act_sintactico)
-        menu_compilar.addAction(self.act_semantico)
-        menu_compilar.addAction(self.act_intermedio)
-        menu_compilar.addSeparator()
         menu_compilar.addAction(self.act_ejecutar)
 
         # ===== Menu Ver =====
@@ -942,27 +906,9 @@ class VentanaPrincipal(QMainWindow):
 
         toolbar.addSeparator()
 
-        # Botones de compilacion
-        btn_lexico = QAction("Lexico [F5]", self)
-        btn_lexico.triggered.connect(self.ejecutar_lexico)
-        toolbar.addAction(btn_lexico)
-
-        btn_sintactico = QAction("Sintactico [F6]", self)
-        btn_sintactico.triggered.connect(self.ejecutar_sintactico)
-        toolbar.addAction(btn_sintactico)
-
-        btn_semantico = QAction("Semantico [F7]", self)
-        btn_semantico.triggered.connect(self.ejecutar_semantico)
-        toolbar.addAction(btn_semantico)
-
-        btn_intermedio = QAction("Intermedio [F8]", self)
-        btn_intermedio.triggered.connect(self.ejecutar_intermedio)
-        toolbar.addAction(btn_intermedio)
-
-        toolbar.addSeparator()
-
-        btn_ejecutar = QAction("Ejecutar [F9]", self)
-        btn_ejecutar.triggered.connect(self.ejecutar_programa)
+        # Boton unico de compilacion: ejecuta lexico + sintactico.
+        btn_ejecutar = QAction("Ejecutar [F5]", self)
+        btn_ejecutar.triggered.connect(self.ejecutar_analisis)
         toolbar.addAction(btn_ejecutar)
 
     # -----------------------------------------------------------------
@@ -1122,12 +1068,9 @@ class VentanaPrincipal(QMainWindow):
         """Limpia todos los paneles de resultados y errores."""
         self.tabla_lexico.setRowCount(0)
         self.arbol_sintactico.clear()
-        self.tabla_semantico.setRowCount(0)
-        self.texto_codigo_intermedio.clear()
         self.tabla_simbolos.setRowCount(0)
         self.tabla_err_lexico.setRowCount(0)
         self.tabla_err_sintactico.setRowCount(0)
-        self.tabla_err_semantico.setRowCount(0)
         self.texto_resultados.clear()
 
     # -----------------------------------------------------------------
@@ -1155,10 +1098,11 @@ class VentanaPrincipal(QMainWindow):
         El compilador se ejecuta como:
             python compilador.py <fase> <archivo_entrada> <archivo_salida>
 
-        Donde <fase> puede ser: lexico, sintactico, semantico, intermedio, ejecutar
+        Donde <fase> puede ser: lexico o sintactico.
 
         El compilador escribe su salida en formato JSON al archivo de salida.
-        Si el compilador no existe, se usa un analizador interno de ejemplo.
+        La interfaz no realiza analisis lexico ni sintactico; solo invoca el
+        compilador externo y muestra sus resultados.
 
         Args:
             fase: Nombre de la fase a ejecutar
@@ -1243,400 +1187,18 @@ class VentanaPrincipal(QMainWindow):
                 self._limpiar_temporal(archivo_salida)
 
         else:
-            # ------- Compilador externo NO existe: demo interno -------
+            # ------- Compilador externo NO existe -------
             self._limpiar_temporal(archivo_salida)
-            return self._analizador_demo(fase, archivo_entrada)
-
-    def _analizador_demo(self, fase, archivo_entrada):
-        """Analizador lexico de demostracion (fallback) que usa el mismo
-        modulo compilador.py importado directamente si esta disponible,
-        o un analizador inline simplificado."""
-        with open(archivo_entrada, "r", encoding="utf-8") as f:
-            codigo = f.read()
-
-        # Intentar importar compilador.py directamente
-        try:
-            directorio_ide = os.path.dirname(os.path.abspath(__file__))
-            sys.path.insert(0, directorio_ide)
-            import compilador as comp
-            resultado = comp.analisis_lexico(codigo)
-
-            if fase in ("sintactico", "semantico", "intermedio", "ejecutar"):
-                resultado = comp.analisis_sintactico(codigo)
-            if fase in ("semantico", "intermedio", "ejecutar"):
-                resultado = comp.analisis_semantico(codigo)
-            if fase in ("intermedio", "ejecutar"):
-                resultado = comp.generar_intermedio(codigo)
-            if fase == "ejecutar":
-                resultado = comp.ejecutar(codigo)
-            return resultado
-        except ImportError:
-            pass
-
-        # Fallback: analizador inline basico con tipos del PDF
-        tokens = []
-        errores = []
-        tabla_sim = []
-
-        keywords = {
-            "if", "else", "end", "do", "while", "switch", "case",
-            "int", "float", "main", "cin", "cout"
-        }
-
-        op_arit_simples = {"+", "-", "*", "/", "%", "^"}
-        op_rel_simples = {"<", ">"}
-        op_log_simples = {"!"}
-        simbolos = {"(", ")", "{", "}", ",", ";"}
-
-        num_token = 1
-        num_simbolo = 1
-        simbolos_vistos = {}
-        en_comentario_bloque = False
-
-        lineas_src = codigo.split('\n')
-        for num_linea, linea in enumerate(lineas_src, start=1):
-            col = 0
-            while col < len(linea):
-                ch = linea[col]
-
-                if en_comentario_bloque:
-                    cierre_idx = linea.find("*/", col)
-                    if cierre_idx != -1:
-                        tokens.append({"no": num_token, "token": linea[col:cierre_idx+2],
-                                       "tipo": "COMENTARIO", "linea": num_linea, "columna": col+1})
-                        num_token += 1
-                        col = cierre_idx + 2
-                        en_comentario_bloque = False
-                    else:
-                        if col < len(linea):
-                            tokens.append({"no": num_token, "token": linea[col:],
-                                           "tipo": "COMENTARIO", "linea": num_linea, "columna": col+1})
-                            num_token += 1
-                        break
-                    continue
-
-                if ch.isspace():
-                    col += 1
-                    continue
-
-                # Comentarios //
-                if col+1 < len(linea) and linea[col:col+2] == '//':
-                    tokens.append({"no": num_token, "token": linea[col:],
-                                   "tipo": "COMENTARIO", "linea": num_linea, "columna": col+1})
-                    num_token += 1
-                    break
-
-                # Comentarios /* */
-                if col+1 < len(linea) and linea[col:col+2] == '/*':
-                    cierre_idx = linea.find("*/", col+2)
-                    if cierre_idx != -1:
-                        tokens.append({"no": num_token, "token": linea[col:cierre_idx+2],
-                                       "tipo": "COMENTARIO", "linea": num_linea, "columna": col+1})
-                        num_token += 1
-                        col = cierre_idx + 2
-                    else:
-                        tokens.append({"no": num_token, "token": linea[col:],
-                                       "tipo": "COMENTARIO", "linea": num_linea, "columna": col+1})
-                        num_token += 1
-                        en_comentario_bloque = True
-                        break
-                    continue
-
-                # Cadenas ""
-                if ch == '"':
-                    inicio = col; col += 1
-                    while col < len(linea) and linea[col] != '"':
-                        col += 1
-                    if col < len(linea):
-                        col += 1
-                        tokens.append({"no": num_token, "token": linea[inicio:col],
-                                       "tipo": "CADENA", "linea": num_linea, "columna": inicio+1})
-                        num_token += 1
-                    else:
-                        errores.append({"linea": num_linea, "columna": inicio+1,
-                                        "tipo": "Error Lexico", "descripcion": f"Cadena sin cerrar: {linea[inicio:]}"})
-                    continue
-
-                # Caracteres ''
-                if ch == "'":
-                    inicio = col; col += 1
-                    while col < len(linea) and linea[col] != "'":
-                        col += 1
-                    if col < len(linea):
-                        col += 1
-                        tokens.append({"no": num_token, "token": linea[inicio:col],
-                                       "tipo": "CARACTER", "linea": num_linea, "columna": inicio+1})
-                        num_token += 1
-                    else:
-                        errores.append({"linea": num_linea, "columna": inicio+1,
-                                        "tipo": "Error Lexico", "descripcion": f"Caracter sin cerrar: {linea[inicio:]}"})
-                    continue
-
-                # Numeros (enteros y reales)
-                # Casos:
-                # - "32.algo" -> "32." es error, "algo" es identificador
-                # - "32.0algo" -> "32.0" es NUMERO_REAL, "algo" es IDENTIFICADOR
-                # - "123abc" -> error (identificador que empieza con digito)
-                if ch.isdigit():
-                    inicio = col
-                    tiene_punto = False
-                    tiene_decimales = False
-                    fin_numero = col  # Guardar posicion final del numero valido
-                    
-                    # Consumir digitos de la parte entera
-                    while col < len(linea) and linea[col].isdigit():
-                        col += 1
-                    fin_numero = col  # Fin de la parte entera
-                    
-                    # Verificar si hay punto decimal
-                    if col < len(linea) and linea[col] == '.':
-                        col += 1
-                        
-                        # Verificar si hay digitos despues del punto
-                        if col < len(linea) and linea[col].isdigit():
-                            tiene_punto = True
-                            tiene_decimales = True
-                            # Consumir digitos decimales
-                            while col < len(linea) and linea[col].isdigit():
-                                col += 1
-                            fin_numero = col  # Fin del numero real completo
-                        else:
-                            # Punto sin digitos despues -> es error
-                            tiene_punto = True
-                            tiene_decimales = False
-                            # fin_numero queda en la parte entera (antes del punto)
-                    
-                    # Verificar si hay letras despues del numero
-                    if col < len(linea) and (linea[col].isalpha() or linea[col] == '_'):
-                        if tiene_punto and tiene_decimales:
-                            # Caso "32.0algo": el numero real es valido
-                            # Guardamos el numero real hasta fin_numero
-                            tokens.append({"no": num_token, "token": linea[inicio:fin_numero],
-                                           "tipo": "NUMERO_REAL", "linea": num_linea, "columna": inicio+1})
-                            num_token += 1
-                            # Retrocedemos col para que las letras se procesen como identificador
-                            col = fin_numero
-                        elif tiene_punto and not tiene_decimales:
-                            # Caso "32.algo": error por punto sin decimales
-                            # El error incluye hasta el punto (col esta despues del punto)
-                            errores.append({"linea": num_linea, "columna": inicio+1,
-                                            "tipo": "Error Lexico",
-                                            "descripcion": f"Numero mal formado: {linea[inicio:col]}"})
-                            # col ya esta en la letra, se procesara como identificador
-                        else:
-                            # Caso "123abc": error por identificador que empieza con digito
-                            while col < len(linea) and (linea[col].isalnum() or linea[col] == '_'):
-                                col += 1
-                            errores.append({"linea": num_linea, "columna": inicio+1,
-                                            "tipo": "Error Lexico",
-                                            "descripcion": f"Identificador no valido (empieza con digito): {linea[inicio:col]}"})
-                    elif tiene_punto and not tiene_decimales:
-                        # Caso "32." solo: error
-                        errores.append({"linea": num_linea, "columna": inicio+1,
-                                        "tipo": "Error Lexico",
-                                        "descripcion": f"Numero mal formado: {linea[inicio:col]}"})
-                    else:
-                        # Numero valido (entero o real)
-                        tipo_num = "NUMERO_REAL" if tiene_punto else "NUMERO_ENTERO"
-                        tokens.append({"no": num_token, "token": linea[inicio:fin_numero],
-                                       "tipo": tipo_num, "linea": num_linea, "columna": inicio+1})
-                        num_token += 1
-                    continue
-
-                # Identificadores / Palabras reservadas
-                if ch.isalpha() or ch == '_':
-                    inicio = col
-                    while col < len(linea) and (linea[col].isalnum() or linea[col] == '_'):
-                        col += 1
-                    palabra = linea[inicio:col]
-                    if palabra in keywords:
-                        tipo_tok = "PALABRA_RESERVADA"
-                    else:
-                        tipo_tok = "IDENTIFICADOR"
-                        if palabra not in simbolos_vistos:
-                            simbolos_vistos[palabra] = {
-                                "id": num_simbolo, "nombre": palabra,
-                                "tipo": "desconocido", "valor": "",
-                                "scope": "global", "linea": num_linea
-                            }
-                            num_simbolo += 1
-                    tokens.append({"no": num_token, "token": palabra, "tipo": tipo_tok,
-                                   "linea": num_linea, "columna": inicio+1})
-                    num_token += 1
-                    continue
-
-                # Operadores dobles
-                if col+1 < len(linea):
-                    doble = linea[col:col+2]
-                    if doble in ("++", "--"):
-                        tokens.append({"no": num_token, "token": doble, "tipo": "OPERADOR_ARITMETICO",
-                                       "linea": num_linea, "columna": col+1})
-                        num_token += 1; col += 2; continue
-                    if doble in ("<=", ">=", "!=", "=="):
-                        tokens.append({"no": num_token, "token": doble, "tipo": "OPERADOR_RELACIONAL",
-                                       "linea": num_linea, "columna": col+1})
-                        num_token += 1; col += 2; continue
-                    if doble in ("&&", "||"):
-                        tokens.append({"no": num_token, "token": doble, "tipo": "OPERADOR_LOGICO",
-                                       "linea": num_linea, "columna": col+1})
-                        num_token += 1; col += 2; continue
-
-                if ch in op_arit_simples:
-                    tokens.append({"no": num_token, "token": ch, "tipo": "OPERADOR_ARITMETICO",
-                                   "linea": num_linea, "columna": col+1})
-                    num_token += 1; col += 1; continue
-
-                if ch in op_rel_simples:
-                    tokens.append({"no": num_token, "token": ch, "tipo": "OPERADOR_RELACIONAL",
-                                   "linea": num_linea, "columna": col+1})
-                    num_token += 1; col += 1; continue
-
-                if ch in op_log_simples:
-                    tokens.append({"no": num_token, "token": ch, "tipo": "OPERADOR_LOGICO",
-                                   "linea": num_linea, "columna": col+1})
-                    num_token += 1; col += 1; continue
-
-                if ch == '=':
-                    tokens.append({"no": num_token, "token": ch, "tipo": "ASIGNACION",
-                                   "linea": num_linea, "columna": col+1})
-                    num_token += 1; col += 1; continue
-
-                if ch in simbolos:
-                    tokens.append({"no": num_token, "token": ch, "tipo": "SIMBOLO",
-                                   "linea": num_linea, "columna": col+1})
-                    num_token += 1; col += 1; continue
-
-                errores.append({"linea": num_linea, "columna": col+1,
-                                "tipo": "Error Lexico", "descripcion": f"Caracter no reconocido: '{ch}'"})
-                col += 1
-
-        if en_comentario_bloque:
-            errores.append({"linea": len(lineas_src), "columna": 1,
-                            "tipo": "Error Lexico", "descripcion": "Comentario de bloque sin cerrar (falta */)"})
-
-        for nombre, info in simbolos_vistos.items():
-            tabla_sim.append(info)
-
-        resultado = {"tokens": tokens, "errores": errores, "tabla_simbolos": tabla_sim}
-
-        if fase in ("sintactico", "semantico", "intermedio", "ejecutar"):
-            resultado["arbol"] = {"nodo": "Programa", "valor": "", "tipo": "",
-                                  "hijos": self._generar_arbol_demo(tokens)}
-        if fase in ("semantico", "intermedio", "ejecutar"):
-            resultado["semantico"] = []
-            for tok in tokens:
-                if tok["tipo"] == "IDENTIFICADOR":
-                    resultado["semantico"].append({
-                        "no": len(resultado["semantico"])+1, "expresion": tok["token"],
-                        "tipo_esperado": "variable", "tipo_encontrado": "identificador", "estado": "OK"
-                    })
-        if fase in ("intermedio", "ejecutar"):
-            resultado["codigo_intermedio"] = self._generar_codigo_intermedio_demo(tokens)
-        if fase == "ejecutar":
-            resultado["salida_ejecucion"] = "-- Resultado de ejecucion --\n(Conecte su compilador externo para ver resultados reales)"
-
-        return resultado
-
-    def _generar_arbol_demo(self, tokens):
-        """Genera un arbol sintactico de demostracion agrupando sentencias."""
-        hijos = []
-        sentencia_actual = []
-        num_sentencia = 1
-
-        for tok in tokens:
-            sentencia_actual.append(tok)
-            if tok["token"] in (";", "{", "}"):
-                nodo_sentencia = {
-                    "nodo": f"Sentencia_{num_sentencia}",
-                    "valor": "",
-                    "tipo": "sentencia",
-                    "hijos": [
-                        {
-                            "nodo": t["tipo"],
-                            "valor": t["token"],
-                            "tipo": t["tipo"],
-                            "hijos": []
-                        }
-                        for t in sentencia_actual
-                    ]
-                }
-                hijos.append(nodo_sentencia)
-                sentencia_actual = []
-                num_sentencia += 1
-
-        # Tokens restantes sin terminador
-        if sentencia_actual:
-            nodo_sentencia = {
-                "nodo": f"Sentencia_{num_sentencia}",
-                "valor": "",
-                "tipo": "sentencia",
-                "hijos": [
+            return {
+                "errores": [
                     {
-                        "nodo": t["tipo"],
-                        "valor": t["token"],
-                        "tipo": t["tipo"],
-                        "hijos": []
+                        "linea": 0,
+                        "columna": 0,
+                        "tipo": "Error del compilador",
+                        "descripcion": "No se encontro scripts/compilador.py"
                     }
-                    for t in sentencia_actual
                 ]
             }
-            hijos.append(nodo_sentencia)
-
-        return hijos
-
-    def _generar_codigo_intermedio_demo(self, tokens):
-        """Genera codigo de tres direcciones de demostracion."""
-        lineas = []
-        temp_count = 0
-
-        i = 0
-        while i < len(tokens):
-            # Patron: id = expr ;
-            if (i + 2 < len(tokens)
-                    and tokens[i]["tipo"] == "IDENTIFICADOR"
-                    and tokens[i+1]["token"] == "="):
-                var = tokens[i]["token"]
-                j = i + 2
-                expresion_tokens = []
-                while j < len(tokens) and tokens[j]["token"] != ";":
-                    expresion_tokens.append(tokens[j]["token"])
-                    j += 1
-
-                if len(expresion_tokens) >= 3:
-                    # a = b op c  -->  t0 = b op c  ;  a = t0
-                    temp_name = f"t{temp_count}"
-                    temp_count += 1
-                    lineas.append(f"  {temp_name} = {' '.join(expresion_tokens)}")
-                    lineas.append(f"  {var} = {temp_name}")
-                elif expresion_tokens:
-                    lineas.append(f"  {var} = {' '.join(expresion_tokens)}")
-
-                i = j + 1
-                continue
-
-            # Patron: print(expr)
-            if (tokens[i]["token"] in ("print", "escribir")
-                    and i + 1 < len(tokens)
-                    and tokens[i+1]["token"] == "("):
-                j = i + 2
-                args = []
-                while j < len(tokens) and tokens[j]["token"] != ")":
-                    if tokens[j]["token"] != ",":
-                        args.append(tokens[j]["token"])
-                    j += 1
-                for arg in args:
-                    lineas.append(f"  param {arg}")
-                lineas.append(f"  call {tokens[i]['token']}, {len(args)}")
-                i = j + 1
-                continue
-
-            i += 1
-
-        if not lineas:
-            lineas.append("  ; No se genero codigo intermedio")
-            lineas.append("  ; (Conecte su compilador para resultados reales)")
-
-        return "\n".join(lineas)
 
     def _limpiar_temporal(self, ruta):
         """Elimina un archivo temporal de forma segura."""
@@ -1666,39 +1228,25 @@ class VentanaPrincipal(QMainWindow):
         texto_nodo = nodo.get("nodo", "")
         texto_valor = nodo.get("valor", "")
         texto_tipo = nodo.get("tipo", "")
+        partes = [texto_nodo]
+        if texto_valor:
+            partes.append(f"valor: {texto_valor}")
+        if texto_tipo:
+            partes.append(f"tipo: {texto_tipo}")
+        etiqueta = " | ".join(partes)
 
         if parent_item is None:
             item = QTreeWidgetItem(self.arbol_sintactico)
         else:
             item = QTreeWidgetItem(parent_item)
 
-        item.setText(0, texto_nodo)
-        item.setText(1, texto_valor)
-        item.setText(2, texto_tipo)
+        item.setText(0, etiqueta)
+        item.setToolTip(0, etiqueta)
 
         for hijo in nodo.get("hijos", []):
             self._mostrar_arbol(hijo, item)
 
         item.setExpanded(True)
-
-    def _mostrar_semantico(self, validaciones):
-        """Muestra los resultados del analisis semantico."""
-        self.tabla_semantico.setRowCount(0)
-        for val in validaciones:
-            row = self.tabla_semantico.rowCount()
-            self.tabla_semantico.insertRow(row)
-            self.tabla_semantico.setItem(row, 0, QTableWidgetItem(str(val.get("no", ""))))
-            self.tabla_semantico.setItem(row, 1, QTableWidgetItem(val.get("expresion", "")))
-            self.tabla_semantico.setItem(row, 2, QTableWidgetItem(val.get("tipo_esperado", "")))
-            self.tabla_semantico.setItem(row, 3, QTableWidgetItem(val.get("tipo_encontrado", "")))
-
-            item_estado = QTableWidgetItem(val.get("estado", ""))
-            estado = val.get("estado", "")
-            if estado == "OK":
-                item_estado.setForeground(QColor(Colores.VERDE))
-            elif estado == "ERROR":
-                item_estado.setForeground(QColor(Colores.ROJO))
-            self.tabla_semantico.setItem(row, 4, item_estado)
 
     def _mostrar_tabla_simbolos(self, simbolos):
         """Muestra la tabla de simbolos."""
@@ -1752,22 +1300,6 @@ class VentanaPrincipal(QMainWindow):
                 self.tabs_derecho.setCurrentWidget(self.arbol_sintactico)
                 self.label_estado.setText("Analisis sintactico completado")
 
-        # Semantico
-        if "semantico" in resultado:
-            self._mostrar_semantico(resultado["semantico"])
-            if fase == "semantico":
-                self.tabs_derecho.setCurrentWidget(self.tabla_semantico)
-                self.label_estado.setText("Analisis semantico completado")
-
-        # Codigo intermedio
-        if "codigo_intermedio" in resultado:
-            self.texto_codigo_intermedio.setPlainText(
-                resultado["codigo_intermedio"]
-            )
-            if fase == "intermedio":
-                self.tabs_derecho.setCurrentWidget(self.texto_codigo_intermedio)
-                self.label_estado.setText("Codigo intermedio generado")
-
         # Tabla de simbolos
         if "tabla_simbolos" in resultado:
             self._mostrar_tabla_simbolos(resultado["tabla_simbolos"])
@@ -1776,33 +1308,15 @@ class VentanaPrincipal(QMainWindow):
         errores = resultado.get("errores", [])
         errores_lex = [e for e in errores if "Lexico" in e.get("tipo", "") or "lexico" in e.get("tipo", "")]
         errores_sin = [e for e in errores if "Sintactico" in e.get("tipo", "") or "sintactico" in e.get("tipo", "")]
-        errores_sem = [e for e in errores if "Semantico" in e.get("tipo", "") or "semantico" in e.get("tipo", "")]
-        errores_otros = [e for e in errores if e not in errores_lex and e not in errores_sin and e not in errores_sem]
+        errores_otros = [e for e in errores if e not in errores_lex and e not in errores_sin]
 
-        # Errores no clasificados van a la tabla de la fase actual
-        if fase == "lexico":
-            self._mostrar_errores(errores_lex + errores_otros, self.tabla_err_lexico)
-        elif fase == "sintactico":
-            self._mostrar_errores(errores_sin + errores_otros, self.tabla_err_sintactico)
-        elif fase == "semantico":
-            self._mostrar_errores(errores_sem + errores_otros, self.tabla_err_semantico)
-        else:
-            self._mostrar_errores(errores_lex, self.tabla_err_lexico)
-            self._mostrar_errores(errores_sin, self.tabla_err_sintactico)
-            self._mostrar_errores(errores_sem, self.tabla_err_semantico)
+        self._mostrar_errores(errores_lex, self.tabla_err_lexico)
+        self._mostrar_errores(errores_sin + errores_otros, self.tabla_err_sintactico)
 
         if errores_lex:
             self.tabs_inferior.setCurrentWidget(self.tabla_err_lexico)
         elif errores_sin:
             self.tabs_inferior.setCurrentWidget(self.tabla_err_sintactico)
-        elif errores_sem:
-            self.tabs_inferior.setCurrentWidget(self.tabla_err_semantico)
-
-        # Salida de ejecucion
-        if "salida_ejecucion" in resultado:
-            self.texto_resultados.setPlainText(resultado["salida_ejecucion"])
-            self.tabs_inferior.setCurrentWidget(self.texto_resultados)
-            self.label_estado.setText("Ejecucion completada")
 
         # Salida generica
         if "salida" in resultado:
@@ -1812,56 +1326,16 @@ class VentanaPrincipal(QMainWindow):
     # -----------------------------------------------------------------
     # Acciones de compilacion
     # -----------------------------------------------------------------
-    def ejecutar_lexico(self):
-        """Ejecuta el analisis lexico."""
+    def ejecutar_analisis(self):
+        """Ejecuta lexico y sintactico en una sola accion."""
         self._limpiar_paneles()
         archivo = self._guardar_temporal()
         if archivo:
-            self.label_estado.setText("Ejecutando analisis lexico...")
-            resultado = self._invocar_compilador("lexico", archivo)
-            self._procesar_resultado(resultado, "lexico")
-            self._limpiar_temporal(archivo)
-
-    def ejecutar_sintactico(self):
-        """Ejecuta el analisis sintactico."""
-        self._limpiar_paneles()
-        archivo = self._guardar_temporal()
-        if archivo:
-            self.label_estado.setText("Ejecutando analisis sintactico...")
+            self.label_estado.setText("Ejecutando analisis lexico y sintactico...")
             resultado = self._invocar_compilador("sintactico", archivo)
             self._procesar_resultado(resultado, "sintactico")
+            self.label_estado.setText("Analisis lexico y sintactico completado")
             self._limpiar_temporal(archivo)
-
-    def ejecutar_semantico(self):
-        """Ejecuta el analisis semantico."""
-        self._limpiar_paneles()
-        archivo = self._guardar_temporal()
-        if archivo:
-            self.label_estado.setText("Ejecutando analisis semantico...")
-            resultado = self._invocar_compilador("semantico", archivo)
-            self._procesar_resultado(resultado, "semantico")
-            self._limpiar_temporal(archivo)
-
-    def ejecutar_intermedio(self):
-        """Ejecuta la generacion de codigo intermedio."""
-        self._limpiar_paneles()
-        archivo = self._guardar_temporal()
-        if archivo:
-            self.label_estado.setText("Generando codigo intermedio...")
-            resultado = self._invocar_compilador("intermedio", archivo)
-            self._procesar_resultado(resultado, "intermedio")
-            self._limpiar_temporal(archivo)
-
-    def ejecutar_programa(self):
-        """Ejecuta el programa compilado."""
-        self._limpiar_paneles()
-        archivo = self._guardar_temporal()
-        if archivo:
-            self.label_estado.setText("Ejecutando programa...")
-            resultado = self._invocar_compilador("ejecutar", archivo)
-            self._procesar_resultado(resultado, "ejecutar")
-            self._limpiar_temporal(archivo)
-
 
 # =============================================================================
 # Punto de entrada
