@@ -74,13 +74,59 @@ class Parser:
     def lista_declaracion(self, finales):
         """lista_declaracion -> declaracion*"""
         nodo = ASTNode("ListaDeclaracion")
-        while not self.es("EOF") and self.actual()["token"] not in finales:
+        while not self.es("EOF") and not self._es_final_real(finales):
             declaracion = self.declaracion()
             if declaracion is None:
                 self.sincronizar(finales | {";"})
             else:
                 nodo.agregar(declaracion)
         return nodo
+
+    def _es_final_real(self, finales):
+        """Determina si el token actual es realmente un fin de bloque.
+
+        Un token como 'while' puede ser el cierre de un do-while O el inicio
+        de un while anidado. Para distinguirlos, verificamos si despues de la
+        expresion del while viene un ';' (cierre de do-while) o mas sentencias
+        (while anidado que tendra su propio 'end').
+        """
+        token = self.actual()["token"]
+        if token not in finales:
+            return False
+
+        # Palabras que inician sentencias y pueden ser ambiguas con finales
+        if token in {"while", "do", "if"}:
+            # Si 'while' esta en finales (estamos en do-while), miramos si
+            # despues de la expresion viene un cuerpo (end) o un ';'.
+            # Recorremos hacia adelante para encontrar el patron.
+            if token == "while":
+                return self._while_es_cierre_do()
+            # 'do' e 'if' siempre inician sentencias, no son finales reales
+            return False
+
+        return True
+
+    def _while_es_cierre_do(self):
+        """Determina si el 'while' actual cierra un do-while o inicia un while anidado."""
+        pos_guardada = self.pos
+        errores_guardados = list(self.errores)
+        
+        self.avanzar() # Consumir 'while'
+        
+        es_cierre = False
+        try:
+            self.expresion()
+            # Si se logro parsear la expresion (incluso si tuvo errores internos)
+            # y el token en el que se detuvo es ';', entonces es el cierre del do-while.
+            if self.actual()["token"] == ";":
+                es_cierre = True
+        except Exception:
+            pass
+            
+        self.pos = pos_guardada
+        self.errores = errores_guardados
+        
+        return es_cierre
 
     def declaracion(self):
         """declaracion -> declaracion_variable | sentencia"""
@@ -107,17 +153,28 @@ class Parser:
         return ASTNode("TipoError", token["token"], "error")
 
     def identificador(self):
-        """identificador -> id (, id)*"""
+        """identificador -> id [= expresion] (, id [= expresion])*"""
         nodo = ASTNode("Identificadores")
         tok = self.coincidir(tipo="IDENTIFICADOR", mensaje="Se esperaba un identificador")
         if tok:
-            nodo.agregar(ASTNode("Identificador", tok["token"], "id"))
+            nodo.agregar(self._id_con_init(tok))
         while self.es(","):
             self.avanzar()
             tok = self.coincidir(tipo="IDENTIFICADOR", mensaje="Se esperaba identificador despues de ','")
             if tok:
-                nodo.agregar(ASTNode("Identificador", tok["token"], "id"))
+                nodo.agregar(self._id_con_init(tok))
         return nodo
+
+    def _id_con_init(self, tok):
+        """Parsea un identificador con inicializacion opcional: id [= expresion]"""
+        id_node = ASTNode("Identificador", tok["token"], "id")
+        if self.es("="):
+            self.avanzar()
+            init = ASTNode("Inicializacion")
+            init.agregar(id_node)
+            init.agregar(self.expresion())
+            return init
+        return id_node
 
     def sentencia(self):
         """sentencia -> seleccion | iteracion | repeticion | sent_in | sent_out | asignacion"""
@@ -181,19 +238,18 @@ class Parser:
         nodo = ASTNode("IteracionWhile")
         self.coincidir("while")
         nodo.agregar(self.expresion())
-        nodo.agregar(self.lista_declaracion({"end", "EOF"}))
+        nodo.agregar(ASTNode("Cuerpo").agregar(self.lista_declaracion({"end", "EOF"})))
         self.coincidir("end", mensaje="Se esperaba 'end' para cerrar el while")
         return nodo
 
     def repeticion(self):
-        """repeticion -> do lista_sentencias while expresion"""
+        """repeticion -> do lista_sentencias while expresion ;"""
         nodo = ASTNode("RepeticionDoWhile")
         self.coincidir("do")
-        nodo.agregar(self.lista_declaracion({"while", "EOF"}))
+        nodo.agregar(ASTNode("Cuerpo").agregar(self.lista_declaracion({"while", "EOF"})))
         self.coincidir("while", mensaje="Se esperaba 'while' para cerrar el do")
         nodo.agregar(self.expresion())
-        if self.es(";"):
-            self.avanzar()
+        self.coincidir(";", mensaje="Falta ';' al final del do-while")
         return nodo
 
     def sent_in(self):
@@ -236,7 +292,33 @@ class Parser:
         return nodo
 
     def expresion(self):
-        """expresion -> expresion_simple [rel_op expresion_simple]"""
+        """expresion -> expresion_logica_or"""
+        return self.expresion_logica_or()
+
+    def expresion_logica_or(self):
+        """expresion_logica_or -> expresion_logica_and ('||' expresion_logica_and)*"""
+        nodo = self.expresion_logica_and()
+        while self.actual()["token"] == "||":
+            op = self.avanzar()
+            nuevo = ASTNode("OperacionLogica", op["token"], "op_logico")
+            nuevo.agregar(nodo)
+            nuevo.agregar(self.expresion_logica_and())
+            nodo = nuevo
+        return nodo
+
+    def expresion_logica_and(self):
+        """expresion_logica_and -> expresion_relacional ('&&' expresion_relacional)*"""
+        nodo = self.expresion_relacional()
+        while self.actual()["token"] == "&&":
+            op = self.avanzar()
+            nuevo = ASTNode("OperacionLogica", op["token"], "op_logico")
+            nuevo.agregar(nodo)
+            nuevo.agregar(self.expresion_relacional())
+            nodo = nuevo
+        return nodo
+
+    def expresion_relacional(self):
+        """expresion_relacional -> expresion_simple [rel_op expresion_simple]"""
         nodo = self.expresion_simple()
         if self.actual()["token"] in {"<", "<=", ">", ">=", "==", "!="}:
             op = self.avanzar()
@@ -292,10 +374,10 @@ class Parser:
         return nodo
 
     def componente(self):
-        """componente -> (expresion) | numero | id | bool | op_logico componente"""
+        """componente -> (expresion) | numero | id | bool | ! componente"""
         token = self.actual()
 
-        if token["token"] in {"&&", "||", "!"}:
+        if token["token"] == "!":
             op = self.avanzar()
             return ASTNode("OperacionLogica", op["token"], "op_logico").agregar(self.componente())
 
@@ -322,6 +404,8 @@ class Parser:
         return ASTNode("ErrorComponente", token["token"], "error")
 
 
+
+
 def analisis_sintactico(tokens):
     parser = Parser(tokens)
     ast = parser.parse()
@@ -330,6 +414,10 @@ def analisis_sintactico(tokens):
 
 def guardar_ast(ast, ruta):
     with open(ruta, "w", encoding="utf-8") as archivo:
+        if ast is None:
+            archivo.write("No se genero arbol sintactico porque existen errores sintacticos.\n")
+            return
+
         archivo.write(ast.to_text())
 
 
@@ -338,6 +426,7 @@ def guardar_errores_sintacticos(errores, ruta):
         if not errores:
             archivo.write("Sin errores sintacticos.\n")
             return
+
         for error in errores:
             archivo.write(
                 f"{error['tipo']} - Linea {error['linea']}, Columna {error['columna']}: "

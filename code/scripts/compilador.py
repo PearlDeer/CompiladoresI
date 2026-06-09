@@ -34,19 +34,44 @@ def analizar_lexico(codigo):
     return resultado
 
 
+def guardar_ast_vacio():
+    """Deja el archivo ast.txt vacio cuando hay errores lexicos."""
+    with open(os.path.join(SALIDAS_DIR, "ast.txt"), "w", encoding="utf-8") as archivo:
+        archivo.write("")
+
+
 def analisis_sintactico(codigo):
     """Ejecuta lexico + parser descendente recursivo + AST."""
     resultado = analizar_lexico(codigo)
+
+    errores_lexicos = resultado.get("errores", [])
+
+    # Si hay errores lexicos, NO se genera ni se muestra el arbol.
+    if errores_lexicos:
+        guardar_ast_vacio()
+        guardar_errores_sintacticos(
+            [],
+            os.path.join(SALIDAS_DIR, "errores_sintacticos.txt"),
+        )
+
+        resultado["arbol"] = {}
+        return resultado
+
+    # Si NO hay errores lexicos, entonces sí se ejecuta el parser.
     ast, errores_sintacticos = ejecutar_parser(resultado["tokens"])
 
-    guardar_ast(ast, os.path.join(SALIDAS_DIR, "ast.txt"))
     guardar_errores_sintacticos(
         errores_sintacticos,
         os.path.join(SALIDAS_DIR, "errores_sintacticos.txt"),
     )
 
-    resultado["arbol"] = ast.to_dict()
+    # Los errores sintacticos se agregan, pero NO bloquean el arbol.
     resultado["errores"].extend(errores_sintacticos)
+
+    # Aunque haya errores sintacticos, el arbol se sigue guardando y mostrando.
+    guardar_ast(ast, os.path.join(SALIDAS_DIR, "ast.txt"))
+    resultado["arbol"] = ast.to_dict()
+
     return resultado
 
 
