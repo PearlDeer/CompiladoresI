@@ -459,9 +459,9 @@ class AnalizadorSemantico:
             for hijo in nodo.hijos:
                 self._recorrer(hijo)
             return self._tipo(nodo, "void")
-        return self._expresion(nodo)
+        return self._expresion(nodo, como_sentencia=nombre == "Expresion")
 
-    def _expresion(self, nodo):
+    def _expresion(self, nodo, *, como_sentencia=False):
         nombre = nodo.nodo
         if nombre == "Identificador":
             return self._identificador(nodo)
@@ -488,7 +488,7 @@ class AnalizadorSemantico:
             if len(nodo.hijos) != 1:
                 return self._incompleto(nodo)
             hijo = nodo.hijos[0]
-            tipo = self._expresion(hijo)
+            tipo = self._expresion(hijo, como_sentencia=como_sentencia)
             return self._tipo(nodo, tipo, hijo.atributos.get("valor_constante", DESCONOCIDO))
         if nombre == "OperacionIncremento":
             if len(nodo.hijos) != 1:
@@ -506,7 +506,17 @@ class AnalizadorSemantico:
             simbolo = self.tabla.buscar(destino.valor)
             valor = operando.atributos.get("valor_constante", DESCONOCIDO)
             if valor is not DESCONOCIDO:
-                self._guardar_valor(simbolo, valor + (1 if nodo.valor == "++" else -1), nodo)
+                actualizado = valor + (1 if nodo.valor == "++" else -1)
+                self._guardar_valor(simbolo, actualizado, nodo)
+                if como_sentencia:
+                    # Una sentencia independiente muestra el estado resultante.
+                    # Dentro de otra expresion, postfix conserva el valor anterior.
+                    valor = actualizado
+                    actual = operando
+                    while actual is not destino:
+                        self._tipo(actual, tipo, valor)
+                        actual = actual.hijos[0]
+                    self._tipo(destino, tipo, valor)
             return self._tipo(nodo, tipo, valor)
         if nombre == "OperacionLogica" and nodo.valor == "!":
             if len(nodo.hijos) != 1:

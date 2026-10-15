@@ -185,6 +185,20 @@ class IDETest(unittest.TestCase):
         self.assertEqual(self.ventana.tabla_simbolos.item(0, 3).text(), "2, 3, 4, 4")
         self.assertEqual(r["tabla_simbolos"][0]["valor_actual"], 15)
 
+    def test_arbol_incrementos_y_decrementos_muestra_valor_desde_primera_operacion(self):
+        for op, esperados in (("++", ("7", "8")), ("--", ("5", "4"))):
+            with self.subTest(op=op):
+                r = self.compilar(f"main {{\n int x, y;\n x = 6;\n y = x;\n\n\n y{op};\n y{op};\n}}")
+                self.assertTrue(r["valido"])
+                w = self.ventana
+                for arbol in (w.arbol_semantico, w.arbol_comparacion_anotado):
+                    items = w._items_arbol[arbol]
+                    for ruta, esperado in zip(("0.0.3", "0.0.4"), esperados):
+                        for sufijo in ("", ".0", ".0.0", ".0.0.0"):
+                            self.assertEqual(items[ruta + sufijo].text(2), esperado)
+                    self.assertEqual(items["0.0.3.0.0"].text(3), "7:3")
+                    self.assertEqual(items["0.0.4.0.0"].text(3), "8:3")
+
     def test_resultado_booleano_en_original_anotado_y_comparacion(self):
         self.compilar("main { int x = 4; while x > 2 && x != 0 x--; end }")
         w = self.ventana

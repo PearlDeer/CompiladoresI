@@ -109,6 +109,47 @@ class ValoresTest(unittest.TestCase):
         self.assertEqual(self.simbolo(r, "y")["valor_actual"], 1)
         self.assertEqual(self.simbolo(r, "x")["valor_actual"], 1)
 
+    def test_incrementos_y_decrementos_independientes_anotan_valor_actualizado(self):
+        for tipo, inicial in (("int", 6), ("float", 6.5)):
+            for operaciones, esperados in ((["++", "++"], [inicial + 1, inicial + 2]),
+                                          (["--", "--"], [inicial - 1, inicial - 2]),
+                                          (["++", "--", "--", "++"],
+                                           [inicial + 1, inicial, inicial - 1, inicial])):
+                with self.subTest(tipo=tipo, operaciones=operaciones):
+                    fuente = (f"main {{ {tipo} x, y; x = {inicial}; y = x; "
+                              + " ".join(f"y{op};" for op in operaciones) + " }")
+                    r = self.analizar(fuente)
+                    self.assertTrue(r["valido"], r["errores_semanticos"])
+                    sentencias = [n for n in nodos(r["arbol_semantico"]) if n["nodo"] == "Expresion"]
+                    self.assertEqual(len(sentencias), len(esperados))
+                    for sentencia, esperado in zip(sentencias, esperados):
+                        for nodo in nodos(sentencia):
+                            self.assertEqual(nodo["atributos"]["valor_constante"], esperado)
+                            self.assertEqual(nodo["atributos"]["tipo_calculado"], tipo)
+                    self.assertEqual(self.simbolo(r, "y")["valor_actual"], esperados[-1])
+                    self.assertEqual(self.simbolo(r, "x")["valor_actual"], inicial)
+                    self.assertTrue(all(not n["atributos"] for n in nodos(r["arbol_original"])))
+
+    def test_postfix_en_asignacion_y_condicion_conserva_valor_anterior(self):
+        for op, actualizado in (("++", 7), ("--", 5)):
+            with self.subTest(op=op):
+                r = self.analizar(f"main {{ int x = 6, y; y = x{op}; bool b = x{op} == {actualizado}; }}")
+                self.assertTrue(r["valido"], r["errores_semanticos"])
+                self.assertEqual(self.simbolo(r, "y")["valor_actual"], 6)
+                self.assertEqual(self.simbolo(r, "x")["valor_actual"], 8 if op == "++" else 4)
+                self.assertIs(self.simbolo(r, "b")["valor_actual"], True)
+
+    def test_incremento_y_decremento_independientes_no_inventan_valores(self):
+        for op in ("++", "--"):
+            with self.subTest(op=op):
+                r = self.analizar(f"main {{ int y; cin >> y; y{op}; y{op}; }}")
+                self.assertTrue(r["valido"], r["errores_semanticos"])
+                self.assertFalse(self.simbolo(r, "y")["valor_conocido"])
+                for sentencia in (n for n in nodos(r["arbol_semantico"]) if n["nodo"] == "Expresion"):
+                    for nodo in nodos(sentencia):
+                        self.assertFalse(nodo["atributos"]["es_constante"])
+                        self.assertNotIn("valor_constante", nodo["atributos"])
+
     def test_cortocircuito_no_aplica_incremento_omitido(self):
         for expresion in ("false && (x++ > 0)", "true || (x++ > 0)"):
             with self.subTest(expresion=expresion):
