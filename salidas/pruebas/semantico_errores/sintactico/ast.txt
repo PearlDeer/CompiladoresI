@@ -1,0 +1,66 @@
+Programa
+  ListaDeclaracion
+    DeclaracionVariable
+      Tipo: int [tipo]
+      Identificadores
+        Identificador: x [id]
+    DeclaracionVariable
+      Tipo: float [tipo]
+      Identificadores
+        Identificador: real [id]
+    DeclaracionVariable
+      Tipo: bool [tipo]
+      Identificadores
+        Identificador: activo [id]
+    DeclaracionVariable
+      Tipo: int [tipo]
+      Identificadores
+        Identificador: x [id]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        Identificador: desconocido [id]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        Numero: 1.5 [NUMERO_REAL]
+    Asignacion
+      Identificador: activo [id]
+      SentExpresion
+        Numero: 1 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        OperacionSuma: + [suma_op]
+          Booleano: true [bool]
+          Numero: 1 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: activo [id]
+      SentExpresion
+        OperacionRelacional: < [rel_op]
+          Booleano: true [bool]
+          Numero: 2 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: real [id]
+      SentExpresion
+        Numero: 2 [NUMERO_ENTERO]
+    Seleccion
+      Identificador: x [id]
+      Then
+        ListaDeclaracion
+          Salida
+            ContenidoSalida
+              Identificador: ausente [id]
+    IteracionWhile
+      Identificador: real [id]
+      Cuerpo
+        ListaDeclaracion
+          Entrada
+            Identificador: entrada_ausente [id]
+    RepeticionDoWhile
+      Cuerpo
+        ListaDeclaracion
+          Salida
+            ContenidoSalida
+              Identificador: x [id]
+      Numero: 1 [NUMERO_ENTERO]

@@ -1,0 +1,21 @@
+main {
+  int x;
+  float real;
+  bool activo;
+  int x;
+  x = desconocido;
+  x = 1.5;
+  activo = 1;
+  x = true + 1;
+  activo = true < 2;
+  real = 2;
+  if x then
+    cout << ausente;
+  end
+  while real
+    cin >> entrada_ausente;
+  end
+  do
+    cout << x;
+  while 1;
+}

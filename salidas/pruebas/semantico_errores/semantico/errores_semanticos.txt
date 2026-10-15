@@ -1,0 +1,11 @@
+Error Semantico [SEM_DUPLICADO] - Linea 5, Columna 7: Declaracion duplicada de 'x' en global
+Error Semantico [SEM_NO_DECLARADO] - Linea 6, Columna 7: El identificador 'desconocido' no ha sido declarado
+Error Semantico [SEM_CONVERSION_INVALIDA] - Linea 7, Columna 3: Asignacion incompatible: no se permite convertir float a int
+Error Semantico [SEM_ASIGNACION_INCOMPATIBLE] - Linea 8, Columna 3: Asignacion incompatible: destino bool, expresion int
+Error Semantico [SEM_OPERADOR_INVALIDO] - Linea 9, Columna 12: Tipos incorrectos para '+': bool y int
+Error Semantico [SEM_TIPOS_INCOMPATIBLES] - Linea 10, Columna 17: Operandos incompatibles para '<': bool y int
+Error Semantico [SEM_CONDICION_NO_BOOLEANA] - Linea 12, Columna 6: La condicion requiere bool; se obtuvo int
+Error Semantico [SEM_NO_DECLARADO] - Linea 13, Columna 13: El identificador 'ausente' no ha sido declarado
+Error Semantico [SEM_CONDICION_NO_BOOLEANA] - Linea 15, Columna 9: La condicion requiere bool; se obtuvo float
+Error Semantico [SEM_NO_DECLARADO] - Linea 16, Columna 12: El identificador 'entrada_ausente' no ha sido declarado
+Error Semantico [SEM_CONDICION_NO_BOOLEANA] - Linea 20, Columna 9: La condicion requiere bool; se obtuvo int

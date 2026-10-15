@@ -1,0 +1,8 @@
+Error Semantico [SEM_NO_DECLARADO] - Linea 6, Columna 5: El identificador 'suma' no ha sido declarado
+Error Semantico [SEM_CONVERSION_INVALIDA] - Linea 7, Columna 5: Asignacion incompatible: no se permite convertir float a int
+Error Semantico [SEM_CONVERSION_INVALIDA] - Linea 16, Columna 5: Asignacion incompatible: no se permite convertir float a int
+Error Semantico [SEM_CONVERSION_INVALIDA] - Linea 19, Columna 9: Asignacion incompatible: no se permite convertir float a int
+Error Semantico [SEM_NO_DECLARADO] - Linea 21, Columna 13: El identificador 'suma' no ha sido declarado
+Error Semantico [SEM_NO_DECLARADO] - Linea 32, Columna 5: El identificador 'suma' no ha sido declarado
+Error Semantico [SEM_NO_DECLARADO] - Linea 38, Columna 9: El identificador 'mas' no ha sido declarado
+Error Semantico [SEM_NO_DECLARADO] - Linea 48, Columna 16: El identificador 'mas' no ha sido declarado

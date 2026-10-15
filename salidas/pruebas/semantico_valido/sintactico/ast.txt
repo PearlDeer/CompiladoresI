@@ -1,0 +1,71 @@
+Programa
+  ListaDeclaracion
+    DeclaracionVariable
+      Tipo: int [tipo]
+      Identificadores
+        Inicializacion
+          Identificador: contador [id]
+          Numero: 1 [NUMERO_ENTERO]
+    DeclaracionVariable
+      Tipo: float [tipo]
+      Identificadores
+        Inicializacion
+          Identificador: total [id]
+          Numero: 2 [NUMERO_ENTERO]
+    DeclaracionVariable
+      Tipo: bool [tipo]
+      Identificadores
+        Inicializacion
+          Identificador: activo [id]
+          Booleano: true [bool]
+    Asignacion
+      Identificador: total [id]
+      SentExpresion
+        OperacionSuma: + [suma_op]
+          Identificador: contador [id]
+          Numero: 2.5 [NUMERO_REAL]
+    Asignacion
+      Identificador: activo [id]
+      SentExpresion
+        OperacionLogica: && [op_logico]
+          Grupo
+            OperacionRelacional: < [rel_op]
+              Identificador: contador [id]
+              Identificador: total [id]
+          OperacionLogica: ! [op_logico]
+            Booleano: false [bool]
+    Seleccion
+      Identificador: activo [id]
+      Then
+        ListaDeclaracion
+          Salida
+            ContenidoSalida
+              Cadena: "total" [cadena]
+              Identificador: total [id]
+      Else
+        ListaDeclaracion
+          Entrada
+            Identificador: contador [id]
+    IteracionWhile
+      OperacionRelacional: < [rel_op]
+        Identificador: contador [id]
+        Numero: 3 [NUMERO_ENTERO]
+      Cuerpo
+        ListaDeclaracion
+          Expresion
+            SentExpresion
+              OperacionIncremento: ++ [suma_op]
+                Identificador: contador [id]
+    RepeticionDoWhile
+      Cuerpo
+        ListaDeclaracion
+          Expresion
+            SentExpresion
+              OperacionIncremento: -- [suma_op]
+                Identificador: contador [id]
+      OperacionRelacional: > [rel_op]
+        Identificador: contador [id]
+        Numero: 0 [NUMERO_ENTERO]
+    Salida
+      ContenidoSalida
+        Identificador: contador [id]

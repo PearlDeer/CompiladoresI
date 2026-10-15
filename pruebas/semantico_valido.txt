@@ -1,0 +1,19 @@
+main {
+  int contador = 1;
+  float total = 2;
+  bool activo = true;
+  total = contador + 2.5;
+  activo = (contador < total) && !false;
+  if activo then
+    cout << "total" << total;
+  else
+    cin >> contador;
+  end
+  while contador < 3
+    contador++;
+  end
+  do
+    contador--;
+  while contador > 0;
+  cout << contador;
+}

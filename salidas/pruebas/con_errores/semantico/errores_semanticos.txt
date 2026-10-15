@@ -1,0 +1,1 @@
+Analisis semantico bloqueado: estructura sintactica insegura

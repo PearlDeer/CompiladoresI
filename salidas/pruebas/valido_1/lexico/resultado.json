@@ -1,0 +1,543 @@
+{
+  "fase": "lexico",
+  "tokens": [
+    {
+      "no": 1,
+      "token": "main",
+      "lexema": "main",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 1,
+      "columna": 1
+    },
+    {
+      "no": 2,
+      "token": "{",
+      "lexema": "{",
+      "tipo": "SIMBOLO",
+      "linea": 1,
+      "columna": 6
+    },
+    {
+      "no": 3,
+      "token": "int",
+      "lexema": "int",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 2,
+      "columna": 3
+    },
+    {
+      "no": 4,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 2,
+      "columna": 7
+    },
+    {
+      "no": 5,
+      "token": ",",
+      "lexema": ",",
+      "tipo": "SIMBOLO",
+      "linea": 2,
+      "columna": 8
+    },
+    {
+      "no": 6,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 2,
+      "columna": 10
+    },
+    {
+      "no": 7,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 2,
+      "columna": 11
+    },
+    {
+      "no": 8,
+      "token": "float",
+      "lexema": "float",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 3,
+      "columna": 3
+    },
+    {
+      "no": 9,
+      "token": "promedio",
+      "lexema": "promedio",
+      "tipo": "IDENTIFICADOR",
+      "linea": 3,
+      "columna": 9
+    },
+    {
+      "no": 10,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 3,
+      "columna": 17
+    },
+    {
+      "no": 11,
+      "token": "bool",
+      "lexema": "bool",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 4,
+      "columna": 3
+    },
+    {
+      "no": 12,
+      "token": "activo",
+      "lexema": "activo",
+      "tipo": "IDENTIFICADOR",
+      "linea": 4,
+      "columna": 8
+    },
+    {
+      "no": 13,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 4,
+      "columna": 14
+    },
+    {
+      "no": 14,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 6,
+      "columna": 3
+    },
+    {
+      "no": 15,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 6,
+      "columna": 5
+    },
+    {
+      "no": 16,
+      "token": "10",
+      "lexema": "10",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 6,
+      "columna": 7
+    },
+    {
+      "no": 17,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 6,
+      "columna": 9
+    },
+    {
+      "no": 18,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 7,
+      "columna": 3
+    },
+    {
+      "no": 19,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 7,
+      "columna": 5
+    },
+    {
+      "no": 20,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 7,
+      "columna": 7
+    },
+    {
+      "no": 21,
+      "token": "+",
+      "lexema": "+",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 7,
+      "columna": 9
+    },
+    {
+      "no": 22,
+      "token": "5",
+      "lexema": "5",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 7,
+      "columna": 11
+    },
+    {
+      "no": 23,
+      "token": "*",
+      "lexema": "*",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 7,
+      "columna": 13
+    },
+    {
+      "no": 24,
+      "token": "2",
+      "lexema": "2",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 7,
+      "columna": 15
+    },
+    {
+      "no": 25,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 7,
+      "columna": 16
+    },
+    {
+      "no": 26,
+      "token": "promedio",
+      "lexema": "promedio",
+      "tipo": "IDENTIFICADOR",
+      "linea": 8,
+      "columna": 3
+    },
+    {
+      "no": 27,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 8,
+      "columna": 12
+    },
+    {
+      "no": 28,
+      "token": "(",
+      "lexema": "(",
+      "tipo": "SIMBOLO",
+      "linea": 8,
+      "columna": 14
+    },
+    {
+      "no": 29,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 8,
+      "columna": 15
+    },
+    {
+      "no": 30,
+      "token": "+",
+      "lexema": "+",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 8,
+      "columna": 17
+    },
+    {
+      "no": 31,
+      "token": "3.5",
+      "lexema": "3.5",
+      "tipo": "NUMERO_REAL",
+      "linea": 8,
+      "columna": 19
+    },
+    {
+      "no": 32,
+      "token": ")",
+      "lexema": ")",
+      "tipo": "SIMBOLO",
+      "linea": 8,
+      "columna": 22
+    },
+    {
+      "no": 33,
+      "token": "/",
+      "lexema": "/",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 8,
+      "columna": 24
+    },
+    {
+      "no": 34,
+      "token": "2",
+      "lexema": "2",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 8,
+      "columna": 26
+    },
+    {
+      "no": 35,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 8,
+      "columna": 27
+    },
+    {
+      "no": 36,
+      "token": "activo",
+      "lexema": "activo",
+      "tipo": "IDENTIFICADOR",
+      "linea": 9,
+      "columna": 3
+    },
+    {
+      "no": 37,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 9,
+      "columna": 10
+    },
+    {
+      "no": 38,
+      "token": "true",
+      "lexema": "true",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 9,
+      "columna": 12
+    },
+    {
+      "no": 39,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 9,
+      "columna": 16
+    },
+    {
+      "no": 40,
+      "token": "if",
+      "lexema": "if",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 11,
+      "columna": 3
+    },
+    {
+      "no": 41,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 11,
+      "columna": 6
+    },
+    {
+      "no": 42,
+      "token": ">=",
+      "lexema": ">=",
+      "tipo": "OPERADOR_RELACIONAL",
+      "linea": 11,
+      "columna": 8
+    },
+    {
+      "no": 43,
+      "token": "10",
+      "lexema": "10",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 11,
+      "columna": 11
+    },
+    {
+      "no": 44,
+      "token": "then",
+      "lexema": "then",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 11,
+      "columna": 14
+    },
+    {
+      "no": 45,
+      "token": "cout",
+      "lexema": "cout",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 12,
+      "columna": 5
+    },
+    {
+      "no": 46,
+      "token": "<<",
+      "lexema": "<<",
+      "tipo": "OPERADOR_SALIDA",
+      "linea": 12,
+      "columna": 10
+    },
+    {
+      "no": 47,
+      "token": "\"valor de y\"",
+      "lexema": "\"valor de y\"",
+      "tipo": "CADENA",
+      "linea": 12,
+      "columna": 13
+    },
+    {
+      "no": 48,
+      "token": "<<",
+      "lexema": "<<",
+      "tipo": "OPERADOR_SALIDA",
+      "linea": 12,
+      "columna": 26
+    },
+    {
+      "no": 49,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 12,
+      "columna": 29
+    },
+    {
+      "no": 50,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 12,
+      "columna": 30
+    },
+    {
+      "no": 51,
+      "token": "else",
+      "lexema": "else",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 13,
+      "columna": 3
+    },
+    {
+      "no": 52,
+      "token": "cin",
+      "lexema": "cin",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 14,
+      "columna": 5
+    },
+    {
+      "no": 53,
+      "token": ">>",
+      "lexema": ">>",
+      "tipo": "OPERADOR_ENTRADA",
+      "linea": 14,
+      "columna": 9
+    },
+    {
+      "no": 54,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 14,
+      "columna": 12
+    },
+    {
+      "no": 55,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 14,
+      "columna": 13
+    },
+    {
+      "no": 56,
+      "token": "end",
+      "lexema": "end",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 15,
+      "columna": 3
+    },
+    {
+      "no": 57,
+      "token": "}",
+      "lexema": "}",
+      "tipo": "SIMBOLO",
+      "linea": 16,
+      "columna": 1
+    }
+  ],
+  "errores": [],
+  "errores_lexicos": [],
+  "errores_sintacticos": [],
+  "errores_semanticos": [],
+  "errores_ejecucion": [],
+  "arbol": {},
+  "arbol_semantico": {},
+  "tabla_simbolos": [
+    {
+      "id": 1,
+      "nombre": "x",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 2,
+      "nombre": "y",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 3,
+      "nombre": "promedio",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 3
+    },
+    {
+      "id": 4,
+      "nombre": "activo",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 4
+    }
+  ],
+  "tabla_simbolos_lexica": [
+    {
+      "id": 1,
+      "nombre": "x",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 2,
+      "nombre": "y",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 3,
+      "nombre": "promedio",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 3
+    },
+    {
+      "id": 4,
+      "nombre": "activo",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 4
+    }
+  ],
+  "conversiones": [],
+  "traza_semantica": [],
+  "estado": "completo",
+  "estado_semantico": "no_ejecutado",
+  "motivo_semantico": "La fase solicitada no incluye analisis semantico",
+  "valido": true,
+  "sha256_fuente": "c18bae297167f4babbaead7695da19288e099474b33062e07e09491e1853be38"
+}

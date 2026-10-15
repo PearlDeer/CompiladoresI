@@ -1,0 +1,359 @@
+{
+  "fase": "lexico",
+  "tokens": [
+    {
+      "no": 1,
+      "token": "main",
+      "lexema": "main",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 1,
+      "columna": 1
+    },
+    {
+      "no": 2,
+      "token": "{",
+      "lexema": "{",
+      "tipo": "SIMBOLO",
+      "linea": 1,
+      "columna": 6
+    },
+    {
+      "no": 3,
+      "token": "int",
+      "lexema": "int",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 2,
+      "columna": 3
+    },
+    {
+      "no": 4,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 2,
+      "columna": 7
+    },
+    {
+      "no": 5,
+      "token": ",",
+      "lexema": ",",
+      "tipo": "SIMBOLO",
+      "linea": 2,
+      "columna": 8
+    },
+    {
+      "no": 6,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 2,
+      "columna": 10
+    },
+    {
+      "no": 7,
+      "token": "float",
+      "lexema": "float",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 3,
+      "columna": 3
+    },
+    {
+      "no": 8,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 3,
+      "columna": 9
+    },
+    {
+      "no": 9,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 5,
+      "columna": 3
+    },
+    {
+      "no": 10,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 5,
+      "columna": 5
+    },
+    {
+      "no": 11,
+      "token": "5",
+      "lexema": "5",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 5,
+      "columna": 7
+    },
+    {
+      "no": 12,
+      "token": "+",
+      "lexema": "+",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 5,
+      "columna": 9
+    },
+    {
+      "no": 13,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 5,
+      "columna": 11
+    },
+    {
+      "no": 14,
+      "token": "if",
+      "lexema": "if",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 7,
+      "columna": 3
+    },
+    {
+      "no": 15,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 7,
+      "columna": 6
+    },
+    {
+      "no": 16,
+      "token": ">",
+      "lexema": ">",
+      "tipo": "OPERADOR_RELACIONAL",
+      "linea": 7,
+      "columna": 8
+    },
+    {
+      "no": 17,
+      "token": "then",
+      "lexema": "then",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 7,
+      "columna": 10
+    },
+    {
+      "no": 18,
+      "token": "cout",
+      "lexema": "cout",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 8,
+      "columna": 5
+    },
+    {
+      "no": 19,
+      "token": "<<",
+      "lexema": "<<",
+      "tipo": "OPERADOR_SALIDA",
+      "linea": 8,
+      "columna": 10
+    },
+    {
+      "no": 20,
+      "token": "\"x\"",
+      "lexema": "\"x\"",
+      "tipo": "CADENA",
+      "linea": 8,
+      "columna": 13
+    },
+    {
+      "no": 21,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 8,
+      "columna": 16
+    },
+    {
+      "no": 22,
+      "token": "else",
+      "lexema": "else",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 9,
+      "columna": 3
+    },
+    {
+      "no": 23,
+      "token": "cin",
+      "lexema": "cin",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 10,
+      "columna": 5
+    },
+    {
+      "no": 24,
+      "token": ">",
+      "lexema": ">",
+      "tipo": "OPERADOR_RELACIONAL",
+      "linea": 10,
+      "columna": 9
+    },
+    {
+      "no": 25,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 10,
+      "columna": 11
+    },
+    {
+      "no": 26,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 10,
+      "columna": 12
+    },
+    {
+      "no": 27,
+      "token": "end",
+      "lexema": "end",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 11,
+      "columna": 3
+    },
+    {
+      "no": 28,
+      "token": "while",
+      "lexema": "while",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 13,
+      "columna": 3
+    },
+    {
+      "no": 29,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 13,
+      "columna": 9
+    },
+    {
+      "no": 30,
+      "token": "<",
+      "lexema": "<",
+      "tipo": "OPERADOR_RELACIONAL",
+      "linea": 13,
+      "columna": 11
+    },
+    {
+      "no": 31,
+      "token": "10",
+      "lexema": "10",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 13,
+      "columna": 13
+    },
+    {
+      "no": 32,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 14,
+      "columna": 5
+    },
+    {
+      "no": 33,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 14,
+      "columna": 7
+    },
+    {
+      "no": 34,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 14,
+      "columna": 9
+    },
+    {
+      "no": 35,
+      "token": "+",
+      "lexema": "+",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 14,
+      "columna": 11
+    },
+    {
+      "no": 36,
+      "token": "1",
+      "lexema": "1",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 14,
+      "columna": 13
+    },
+    {
+      "no": 37,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 14,
+      "columna": 14
+    },
+    {
+      "no": 38,
+      "token": "}",
+      "lexema": "}",
+      "tipo": "SIMBOLO",
+      "linea": 15,
+      "columna": 1
+    }
+  ],
+  "errores": [],
+  "errores_lexicos": [],
+  "errores_sintacticos": [],
+  "errores_semanticos": [],
+  "errores_ejecucion": [],
+  "arbol": {},
+  "arbol_semantico": {},
+  "tabla_simbolos": [
+    {
+      "id": 1,
+      "nombre": "x",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 2,
+      "nombre": "y",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 3
+    }
+  ],
+  "tabla_simbolos_lexica": [
+    {
+      "id": 1,
+      "nombre": "x",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 2,
+      "nombre": "y",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 3
+    }
+  ],
+  "conversiones": [],
+  "traza_semantica": [],
+  "estado": "completo",
+  "estado_semantico": "no_ejecutado",
+  "motivo_semantico": "La fase solicitada no incluye analisis semantico",
+  "valido": true,
+  "sha256_fuente": "f67997441872424f6c82e09f99f3465d2faabfaca9eefcd47c764dfe82739a09"
+}

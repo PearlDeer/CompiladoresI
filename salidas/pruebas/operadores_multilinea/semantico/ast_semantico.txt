@@ -1,0 +1,36 @@
+Programa (linea 1, columna 1) {"id_nodo": "0", "ambito": "global", "tipo_calculado": "void", "es_constante": false}
+  ListaDeclaracion (linea 2, columna 3) {"id_nodo": "0.0", "ambito": "global", "tipo_calculado": "void", "es_constante": false}
+    DeclaracionVariable (linea 2, columna 3) {"id_nodo": "0.0.0", "ambito": "global", "tipo_declarado": "int", "tipo_calculado": "void", "es_constante": false}
+      Tipo: int [tipo] (linea 2, columna 3) {"id_nodo": "0.0.0.0", "ambito": "global", "tipo_calculado": "int", "es_constante": false, "motivo_desconocido": "valor no conocido en compilacion", "tipo_declarado": "int"}
+      Identificadores (linea 2, columna 7) {"id_nodo": "0.0.0.1", "ambito": "global", "tipo_declarado": "int", "tipo_calculado": "void", "es_constante": false}
+        Identificador: a [id] (linea 2, columna 7) {"id_nodo": "0.0.0.1.0", "ambito": "global", "tipo_declarado": "int", "direccion": 0, "desplazamiento": 0, "referencia_tabla_simbolos": 1, "inicializado_al_usar": false, "tipo_calculado": "int", "es_constante": false, "motivo_desconocido": "valor no conocido en compilacion"}
+        Identificador: b [id] (linea 2, columna 10) {"id_nodo": "0.0.0.1.1", "ambito": "global", "tipo_declarado": "int", "direccion": 1, "desplazamiento": 1, "referencia_tabla_simbolos": 2, "inicializado_al_usar": false, "tipo_calculado": "int", "es_constante": false, "motivo_desconocido": "valor no conocido en compilacion"}
+    Asignacion (linea 4, columna 3) {"id_nodo": "0.0.1", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+      Identificador: a [id] (linea 4, columna 3) {"id_nodo": "0.0.1.0", "ambito": "global", "tipo_declarado": "int", "direccion": 0, "desplazamiento": 0, "referencia_tabla_simbolos": 1, "inicializado_al_usar": false, "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+      SentExpresion (linea 4, columna 7) {"id_nodo": "0.0.1.1", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+        Numero: 1 [NUMERO_ENTERO] (linea 4, columna 7) {"id_nodo": "0.0.1.1.0", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+    Asignacion (linea 5, columna 3) {"id_nodo": "0.0.2", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+      Identificador: b [id] (linea 5, columna 3) {"id_nodo": "0.0.2.0", "ambito": "global", "tipo_declarado": "int", "direccion": 1, "desplazamiento": 1, "referencia_tabla_simbolos": 2, "inicializado_al_usar": false, "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+      SentExpresion (linea 5, columna 7) {"id_nodo": "0.0.2.1", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+        Numero: 2 [NUMERO_ENTERO] (linea 5, columna 7) {"id_nodo": "0.0.2.1.0", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+    Expresion (linea 7, columna 3) {"id_nodo": "0.0.3", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+      SentExpresion (linea 7, columna 3) {"id_nodo": "0.0.3.0", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+        OperacionIncremento: ++ [suma_op] (linea 7, columna 4) {"id_nodo": "0.0.3.0.0", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+          Identificador: a [id] (linea 7, columna 3) {"id_nodo": "0.0.3.0.0.0", "ambito": "global", "tipo_declarado": "int", "direccion": 0, "desplazamiento": 0, "referencia_tabla_simbolos": 1, "inicializado_al_usar": true, "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+    Expresion (linea 10, columna 3) {"id_nodo": "0.0.4", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+      SentExpresion (linea 10, columna 3) {"id_nodo": "0.0.4.0", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+        OperacionIncremento: -- [suma_op] (linea 10, columna 4) {"id_nodo": "0.0.4.0.0", "ambito": "global", "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+          Identificador: b [id] (linea 10, columna 3) {"id_nodo": "0.0.4.0.0.0", "ambito": "global", "tipo_declarado": "int", "direccion": 1, "desplazamiento": 1, "referencia_tabla_simbolos": 2, "inicializado_al_usar": true, "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+    Seleccion (linea 14, columna 3) {"id_nodo": "0.0.5", "ambito": "global", "resultado_condicion": false, "condicion_valida": true, "resultado_booleano": false, "tipo_calculado": "void", "es_constante": false}
+      OperacionRelacional: == [rel_op] (linea 14, columna 8) {"id_nodo": "0.0.5.0", "ambito": "global", "tipo_calculado": "bool", "es_constante": true, "valor_constante": false, "resultado_booleano": false, "operandos_evaluados": [{"tipo": "int", "conocido": true, "valor": 2, "motivo": ""}, {"tipo": "int", "conocido": true, "valor": 1, "motivo": ""}], "resultado_condicion": false, "condicion_valida": true}
+        Identificador: a [id] (linea 14, columna 6) {"id_nodo": "0.0.5.0.0", "ambito": "global", "tipo_declarado": "int", "direccion": 0, "desplazamiento": 0, "referencia_tabla_simbolos": 1, "inicializado_al_usar": true, "tipo_calculado": "int", "es_constante": true, "valor_constante": 2}
+        Identificador: b [id] (linea 16, columna 5) {"id_nodo": "0.0.5.0.1", "ambito": "global", "tipo_declarado": "int", "direccion": 1, "desplazamiento": 1, "referencia_tabla_simbolos": 2, "inicializado_al_usar": true, "tipo_calculado": "int", "es_constante": true, "valor_constante": 1}
+      Then (linea 17, columna 5) {"id_nodo": "0.0.5.1", "ambito": "global", "tipo_calculado": "void", "es_constante": false}
+        ListaDeclaracion (linea 17, columna 5) {"id_nodo": "0.0.5.1.0", "ambito": "global", "tipo_calculado": "void", "es_constante": false}
+          Salida (linea 17, columna 5) {"id_nodo": "0.0.5.1.0.0", "ambito": "global", "tipo_calculado": "void", "es_constante": false}
+            ContenidoSalida (linea 19, columna 7) {"id_nodo": "0.0.5.1.0.0.0", "ambito": "global", "tipo_calculado": "void", "es_constante": false}
+              Cadena: "iguales" [cadena] (linea 19, columna 7) {"id_nodo": "0.0.5.1.0.0.0.0", "ambito": "global", "tipo_calculado": "cadena", "es_constante": true, "valor_constante": "iguales"}
+      Else (linea 21, columna 5) {"id_nodo": "0.0.5.2", "ambito": "global", "tipo_calculado": "void", "es_constante": false}
+        ListaDeclaracion (linea 21, columna 5) {"id_nodo": "0.0.5.2.0", "ambito": "global", "tipo_calculado": "void", "es_constante": false}
+          Entrada (linea 21, columna 5) {"id_nodo": "0.0.5.2.0.0", "ambito": "global", "motivo_desconocido": "a recibido por cin; valor de ejecucion", "tipo_calculado": "int", "es_constante": false}
+            Identificador: a [id] (linea 23, columna 7) {"id_nodo": "0.0.5.2.0.0.0", "ambito": "global", "tipo_declarado": "int", "direccion": 0, "desplazamiento": 0, "referencia_tabla_simbolos": 1, "inicializado_al_usar": true, "tipo_calculado": "int", "es_constante": false, "motivo_desconocido": "valor no conocido en compilacion"}

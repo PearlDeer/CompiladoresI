@@ -1,0 +1,4 @@
+Tabla semantica
+ID	Nombre	Tipo	Lineas	Columna	Ambito	Desplazamiento	Declarado	Inicializado
+1	contador	int	2,5,8,9,10,10	7	global	0	True	True
+2	total	float	3,6,9,9,14,14,15,17	9	global	1	True	True

@@ -1,0 +1,3 @@
+Tabla semantica
+ID	Nombre	Tipo	Lineas	Columna	Ambito	Desplazamiento	Declarado	Inicializado
+Analisis semantico bloqueado: estructura sintactica insegura

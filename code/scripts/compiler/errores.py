@@ -9,12 +9,16 @@ class ErrorCompilador:
     descripcion: str
     linea: int
     columna: int
+    codigo: str = ""
 
     def to_dict(self) -> dict:
-        return {
+        resultado = {
             "linea": self.linea,
             "columna": self.columna,
             "tipo": self.tipo,
             "descripcion": self.descripcion,
         }
+        if self.codigo:
+            resultado["codigo"] = self.codigo
+        return resultado
 

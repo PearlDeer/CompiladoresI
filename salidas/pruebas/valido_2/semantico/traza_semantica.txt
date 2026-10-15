@@ -1,0 +1,92 @@
+{"paso": 1, "nodo": "0.0.0.0", "regla": "sintesis", "accion": "propagar", "linea": 2, "columna": 3, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 2, "nodo": "0.0.0.1", "regla": "declaracion", "accion": "heredar", "linea": 2, "columna": 7, "atributo": "tipo_declarado", "valor": "int", "nodo_origen": "0.0.0.0"}
+{"paso": 3, "nodo": "0.0.0.1.0", "regla": "declaracion", "accion": "heredar", "linea": 2, "columna": 7, "atributo": "tipo_declarado", "valor": "int", "nodo_origen": "0.0.0.1"}
+{"paso": 4, "nodo": "0.0.0.1.0", "regla": "sintesis", "accion": "propagar", "linea": 2, "columna": 7, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 5, "nodo": "0.0.0.1.0", "regla": "declaracion", "accion": "insertar", "linea": 2, "columna": 7, "nombre": "contador", "simbolo_id": 1}
+{"paso": 6, "nodo": "0.0.0.1", "regla": "sintesis", "accion": "propagar", "linea": 2, "columna": 7, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 7, "nodo": "0.0.0", "regla": "sintesis", "accion": "propagar", "linea": 2, "columna": 3, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 8, "nodo": "0.0.1.0", "regla": "sintesis", "accion": "propagar", "linea": 3, "columna": 3, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 9, "nodo": "0.0.1.1", "regla": "declaracion", "accion": "heredar", "linea": 3, "columna": 9, "atributo": "tipo_declarado", "valor": "float", "nodo_origen": "0.0.1.0"}
+{"paso": 10, "nodo": "0.0.1.1.0", "regla": "declaracion", "accion": "heredar", "linea": 3, "columna": 9, "atributo": "tipo_declarado", "valor": "float", "nodo_origen": "0.0.1.1"}
+{"paso": 11, "nodo": "0.0.1.1.0", "regla": "sintesis", "accion": "propagar", "linea": 3, "columna": 9, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 12, "nodo": "0.0.1.1.0", "regla": "declaracion", "accion": "insertar", "linea": 3, "columna": 9, "nombre": "total", "simbolo_id": 2}
+{"paso": 13, "nodo": "0.0.1.1", "regla": "sintesis", "accion": "propagar", "linea": 3, "columna": 9, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 14, "nodo": "0.0.1", "regla": "sintesis", "accion": "propagar", "linea": 3, "columna": 3, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 15, "nodo": "0.0.2.0", "regla": "identificador", "accion": "buscar", "linea": 5, "columna": 3, "nombre": "contador", "encontrado": true, "simbolo_id": 1}
+{"paso": 16, "nodo": "0.0.2.0", "regla": "sintesis", "accion": "propagar", "linea": 5, "columna": 3, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 17, "nodo": "0.0.2.1.0", "regla": "sintesis", "accion": "propagar", "linea": 5, "columna": 14, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 18, "nodo": "0.0.2.1", "regla": "sintesis", "accion": "propagar", "linea": 5, "columna": 14, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 19, "nodo": "0.0.2", "regla": "asignacion", "accion": "comprobar", "linea": 5, "columna": 3, "destino": "int", "origen": "int"}
+{"paso": 20, "nodo": "0.0.2", "regla": "flujo_valores", "accion": "actualizar_valor", "linea": 5, "columna": 3, "simbolo_id": 1, "conocido": true, "valor": 0}
+{"paso": 21, "nodo": "0.0.2.0", "regla": "sintesis", "accion": "propagar", "linea": 5, "columna": 3, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 22, "nodo": "0.0.2", "regla": "sintesis", "accion": "propagar", "linea": 5, "columna": 3, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 23, "nodo": "0.0.3.0", "regla": "identificador", "accion": "buscar", "linea": 6, "columna": 3, "nombre": "total", "encontrado": true, "simbolo_id": 2}
+{"paso": 24, "nodo": "0.0.3.0", "regla": "sintesis", "accion": "propagar", "linea": 6, "columna": 3, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 25, "nodo": "0.0.3.1.0", "regla": "sintesis", "accion": "propagar", "linea": 6, "columna": 11, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 26, "nodo": "0.0.3.1", "regla": "sintesis", "accion": "propagar", "linea": 6, "columna": 11, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 27, "nodo": "0.0.3", "regla": "asignacion", "accion": "comprobar", "linea": 6, "columna": 3, "destino": "float", "origen": "float"}
+{"paso": 28, "nodo": "0.0.3", "regla": "flujo_valores", "accion": "actualizar_valor", "linea": 6, "columna": 3, "simbolo_id": 2, "conocido": true, "valor": 1.5}
+{"paso": 29, "nodo": "0.0.3.0", "regla": "sintesis", "accion": "propagar", "linea": 6, "columna": 3, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 30, "nodo": "0.0.3", "regla": "sintesis", "accion": "propagar", "linea": 6, "columna": 3, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 31, "nodo": "0.0.4.0.0", "regla": "identificador", "accion": "buscar", "linea": 8, "columna": 9, "nombre": "contador", "encontrado": true, "simbolo_id": 1}
+{"paso": 32, "nodo": "0.0.4.0.0", "regla": "sintesis", "accion": "propagar", "linea": 8, "columna": 9, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 33, "nodo": "0.0.4.0.1", "regla": "sintesis", "accion": "propagar", "linea": 8, "columna": 20, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 34, "nodo": "0.0.4.0", "regla": "evaluacion_booleana", "accion": "evaluar", "linea": 8, "columna": 18, "resultado": true, "motivo": ""}
+{"paso": 35, "nodo": "0.0.4.0", "regla": "sintesis", "accion": "propagar", "linea": 8, "columna": 18, "atributo": "tipo_calculado", "valor": "bool"}
+{"paso": 36, "nodo": "0.0.4.0", "regla": "condicion", "accion": "comprobar", "linea": 8, "columna": 18, "esperado": "bool", "obtenido": "bool"}
+{"paso": 37, "nodo": "0.0.4.1.0.0.0", "regla": "identificador", "accion": "buscar", "linea": 9, "columna": 5, "nombre": "total", "encontrado": true, "simbolo_id": 2}
+{"paso": 38, "nodo": "0.0.4.1.0.0.0", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 5, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 39, "nodo": "0.0.4.1.0.0.1.0.0", "regla": "identificador", "accion": "buscar", "linea": 9, "columna": 13, "nombre": "total", "encontrado": true, "simbolo_id": 2}
+{"paso": 40, "nodo": "0.0.4.1.0.0.1.0.0", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 13, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 41, "nodo": "0.0.4.1.0.0.1.0.1", "regla": "identificador", "accion": "buscar", "linea": 9, "columna": 21, "nombre": "contador", "encontrado": true, "simbolo_id": 1}
+{"paso": 42, "nodo": "0.0.4.1.0.0.1.0.1", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 21, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 43, "nodo": "0.0.4.1.0.0.1.0.1", "regla": "int_a_float", "accion": "convertir", "linea": 9, "columna": 21, "id": 1, "de": "int", "a": "float", "nodo_origen": "0.0.4.1.0.0.1.0.1", "nodo_contexto": "0.0.4.1.0.0.1.0", "motivo": "operandos mixtos"}
+{"paso": 44, "nodo": "0.0.4.1.0.0.1.0", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 19, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 45, "nodo": "0.0.4.1.0.0.1", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 13, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 46, "nodo": "0.0.4.1.0.0", "regla": "asignacion", "accion": "comprobar", "linea": 9, "columna": 5, "destino": "float", "origen": "float"}
+{"paso": 47, "nodo": "0.0.4.1.0.0", "regla": "flujo_valores", "accion": "actualizar_valor", "linea": 9, "columna": 5, "simbolo_id": 2, "conocido": true, "valor": 1.5}
+{"paso": 48, "nodo": "0.0.4.1.0.0.0", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 5, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 49, "nodo": "0.0.4.1.0.0", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 5, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 50, "nodo": "0.0.4.1.0.1.0", "regla": "identificador", "accion": "buscar", "linea": 10, "columna": 5, "nombre": "contador", "encontrado": true, "simbolo_id": 1}
+{"paso": 51, "nodo": "0.0.4.1.0.1.0", "regla": "sintesis", "accion": "propagar", "linea": 10, "columna": 5, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 52, "nodo": "0.0.4.1.0.1.1.0.0", "regla": "identificador", "accion": "buscar", "linea": 10, "columna": 16, "nombre": "contador", "encontrado": true, "simbolo_id": 1}
+{"paso": 53, "nodo": "0.0.4.1.0.1.1.0.0", "regla": "sintesis", "accion": "propagar", "linea": 10, "columna": 16, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 54, "nodo": "0.0.4.1.0.1.1.0.1", "regla": "sintesis", "accion": "propagar", "linea": 10, "columna": 27, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 55, "nodo": "0.0.4.1.0.1.1.0", "regla": "sintesis", "accion": "propagar", "linea": 10, "columna": 25, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 56, "nodo": "0.0.4.1.0.1.1", "regla": "sintesis", "accion": "propagar", "linea": 10, "columna": 16, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 57, "nodo": "0.0.4.1.0.1", "regla": "asignacion", "accion": "comprobar", "linea": 10, "columna": 5, "destino": "int", "origen": "int"}
+{"paso": 58, "nodo": "0.0.4.1.0.1", "regla": "flujo_valores", "accion": "actualizar_valor", "linea": 10, "columna": 5, "simbolo_id": 1, "conocido": true, "valor": 1}
+{"paso": 59, "nodo": "0.0.4.1.0.1.0", "regla": "sintesis", "accion": "propagar", "linea": 10, "columna": 5, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 60, "nodo": "0.0.4.1.0.1", "regla": "sintesis", "accion": "propagar", "linea": 10, "columna": 5, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 61, "nodo": "0.0.4.1.0", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 5, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 62, "nodo": "0.0.4.1", "regla": "sintesis", "accion": "propagar", "linea": 9, "columna": 5, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 63, "nodo": "0.0.4", "regla": "sintesis", "accion": "propagar", "linea": 8, "columna": 3, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 64, "nodo": "0.0.5.0.0.0.0", "regla": "identificador", "accion": "buscar", "linea": 14, "columna": 5, "nombre": "total", "encontrado": true, "simbolo_id": 2}
+{"paso": 65, "nodo": "0.0.5.0.0.0.0", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 5, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 66, "nodo": "0.0.5.0.0.0.1.0.0", "regla": "identificador", "accion": "buscar", "linea": 14, "columna": 13, "nombre": "total", "encontrado": true, "simbolo_id": 2}
+{"paso": 67, "nodo": "0.0.5.0.0.0.1.0.0", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 13, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 68, "nodo": "0.0.5.0.0.0.1.0.1", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 21, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 69, "nodo": "0.0.5.0.0.0.1.0.1", "regla": "int_a_float", "accion": "convertir", "linea": 14, "columna": 21, "id": 2, "de": "int", "a": "float", "nodo_origen": "0.0.5.0.0.0.1.0.1", "nodo_contexto": "0.0.5.0.0.0.1.0", "motivo": "operandos mixtos"}
+{"paso": 70, "nodo": "0.0.5.0.0.0.1.0", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 19, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 71, "nodo": "0.0.5.0.0.0.1", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 13, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 72, "nodo": "0.0.5.0.0.0", "regla": "asignacion", "accion": "comprobar", "linea": 14, "columna": 5, "destino": "float", "origen": "float"}
+{"paso": 73, "nodo": "0.0.5.0.0.0", "regla": "flujo_valores", "accion": "actualizar_valor", "linea": 14, "columna": 5, "simbolo_id": 2, "conocido": false, "valor": null}
+{"paso": 74, "nodo": "0.0.5.0.0.0.0", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 5, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 75, "nodo": "0.0.5.0.0.0", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 5, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 76, "nodo": "0.0.5.0.0", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 5, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 77, "nodo": "0.0.5.0", "regla": "sintesis", "accion": "propagar", "linea": 14, "columna": 5, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 78, "nodo": "0.0.5.1.0", "regla": "identificador", "accion": "buscar", "linea": 15, "columna": 9, "nombre": "total", "encontrado": true, "simbolo_id": 2}
+{"paso": 79, "nodo": "0.0.5.1.0", "regla": "sintesis", "accion": "propagar", "linea": 15, "columna": 9, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 80, "nodo": "0.0.5.1.1", "regla": "sintesis", "accion": "propagar", "linea": 15, "columna": 17, "atributo": "tipo_calculado", "valor": "int"}
+{"paso": 81, "nodo": "0.0.5.1.1", "regla": "int_a_float", "accion": "convertir", "linea": 15, "columna": 17, "id": 3, "de": "int", "a": "float", "nodo_origen": "0.0.5.1.1", "nodo_contexto": "0.0.5.1", "motivo": "operandos mixtos"}
+{"paso": 82, "nodo": "0.0.5.1", "regla": "evaluacion_booleana", "accion": "evaluar", "linea": 15, "columna": 15, "resultado": null, "motivo": "total modificado en un bucle; valor final no determinado"}
+{"paso": 83, "nodo": "0.0.5.1", "regla": "sintesis", "accion": "propagar", "linea": 15, "columna": 15, "atributo": "tipo_calculado", "valor": "bool"}
+{"paso": 84, "nodo": "0.0.5.1", "regla": "condicion", "accion": "comprobar", "linea": 15, "columna": 15, "esperado": "bool", "obtenido": "bool"}
+{"paso": 85, "nodo": "0.0.5", "regla": "sintesis", "accion": "propagar", "linea": 13, "columna": 3, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 86, "nodo": "0.0.6.0.0", "regla": "identificador", "accion": "buscar", "linea": 17, "columna": 11, "nombre": "total", "encontrado": true, "simbolo_id": 2}
+{"paso": 87, "nodo": "0.0.6.0.0", "regla": "sintesis", "accion": "propagar", "linea": 17, "columna": 11, "atributo": "tipo_calculado", "valor": "float"}
+{"paso": 88, "nodo": "0.0.6.0.1", "regla": "sintesis", "accion": "propagar", "linea": 17, "columna": 20, "atributo": "tipo_calculado", "valor": "cadena"}
+{"paso": 89, "nodo": "0.0.6.0", "regla": "sintesis", "accion": "propagar", "linea": 17, "columna": 11, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 90, "nodo": "0.0.6", "regla": "sintesis", "accion": "propagar", "linea": 17, "columna": 3, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 91, "nodo": "0.0", "regla": "sintesis", "accion": "propagar", "linea": 2, "columna": 3, "atributo": "tipo_calculado", "valor": "void"}
+{"paso": 92, "nodo": "0", "regla": "sintesis", "accion": "propagar", "linea": 1, "columna": 1, "atributo": "tipo_calculado", "valor": "void"}

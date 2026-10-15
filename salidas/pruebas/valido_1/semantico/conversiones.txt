@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.5.1.0.0.0.0",
+    "nodo_contexto": "0.0.5.1.0.0.0",
+    "motivo": "operandos mixtos",
+    "linea": 8,
+    "columna": 15
+  },
+  {
+    "id": 2,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.5.1.0.1",
+    "nodo_contexto": "0.0.5.1.0",
+    "motivo": "operandos mixtos",
+    "linea": 8,
+    "columna": 26
+  }
+]

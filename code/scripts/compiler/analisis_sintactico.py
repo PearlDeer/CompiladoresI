@@ -24,6 +24,12 @@ class Parser:
             self.pos += 1
         return token
 
+    def nodo(self, nombre, valor="", tipo="", *, token=None):
+        """Conserva la ubicacion del token que origino cada nodo."""
+        token = self.actual() if token is None else token
+        return ASTNode(nombre, valor, tipo,
+                       linea=token["linea"], columna=token["columna"])
+
     def mirar(self, distancia=1):
         indice = self.pos + distancia
         if indice < len(self.tokens):
@@ -62,18 +68,20 @@ class Parser:
 
     def parse(self):
         """programa -> main { lista_declaracion }"""
-        raiz = ASTNode("Programa")
+        raiz = self.nodo("Programa")
         self.coincidir("main", mensaje="El programa debe iniciar con 'main'")
         self.coincidir("{", mensaje="Se esperaba '{' despues de main")
         raiz.agregar(self.lista_declaracion({"}", "EOF"}))
         self.coincidir("}", mensaje="Se esperaba '}' para cerrar main")
         if not self.es("EOF"):
             self.error("Hay tokens despues del cierre del programa")
+        if self.errores:
+            raiz.atributos["sintaxis_recuperada"] = True
         return raiz
 
     def lista_declaracion(self, finales):
         """lista_declaracion -> declaracion*"""
-        nodo = ASTNode("ListaDeclaracion")
+        nodo = self.nodo("ListaDeclaracion")
         while not self.es("EOF") and not self._es_final_real(finales):
             declaracion = self.declaracion()
             if declaracion is None:
@@ -136,7 +144,7 @@ class Parser:
 
     def declaracion_variable(self):
         """declaracion_variable -> tipo identificador ;"""
-        nodo = ASTNode("DeclaracionVariable")
+        nodo = self.nodo("DeclaracionVariable")
         tipo = self.tipo()
         nodo.agregar(tipo)
         nodo.agregar(self.identificador())
@@ -148,13 +156,13 @@ class Parser:
         token = self.actual()
         if token["token"] in {"int", "float", "bool"}:
             self.avanzar()
-            return ASTNode("Tipo", token["token"], "tipo")
+            return self.nodo("Tipo", token["token"], "tipo", token=token)
         self.error("Se esperaba un tipo: int, float o bool")
-        return ASTNode("TipoError", token["token"], "error")
+        return self.nodo("TipoError", token["token"], "error", token=token)
 
     def identificador(self):
         """identificador -> id [= expresion] (, id [= expresion])*"""
-        nodo = ASTNode("Identificadores")
+        nodo = self.nodo("Identificadores")
         tok = self.coincidir(tipo="IDENTIFICADOR", mensaje="Se esperaba un identificador")
         if tok:
             nodo.agregar(self._id_con_init(tok))
@@ -167,10 +175,10 @@ class Parser:
 
     def _id_con_init(self, tok):
         """Parsea un identificador con inicializacion opcional: id [= expresion]"""
-        id_node = ASTNode("Identificador", tok["token"], "id")
+        id_node = self.nodo("Identificador", tok["token"], "id", token=tok)
         if self.es("="):
             self.avanzar()
-            init = ASTNode("Inicializacion")
+            init = self.nodo("Inicializacion", token=tok)
             init.agregar(id_node)
             init.agregar(self.expresion())
             return init
@@ -192,7 +200,7 @@ class Parser:
                 return self.sent_out()
             if token["tipo"] == "IDENTIFICADOR":
                 if self.mirar()["token"] != "=":
-                    return ASTNode("Expresion").agregar(self.sent_expresion())
+                    return self.nodo("Expresion").agregar(self.sent_expresion())
                 return self.asignacion()
             self.error(f"Sentencia no valida cerca de '{token['token']}'")
             return None
@@ -202,17 +210,17 @@ class Parser:
 
     def asignacion(self):
         """asignacion -> id = sent_expresion"""
-        nodo = ASTNode("Asignacion")
+        nodo = self.nodo("Asignacion")
         tok = self.coincidir(tipo="IDENTIFICADOR", mensaje="Se esperaba identificador al inicio de asignacion")
         if tok:
-            nodo.agregar(ASTNode("Identificador", tok["token"], "id"))
+            nodo.agregar(self.nodo("Identificador", tok["token"], "id", token=tok))
         self.coincidir("=", mensaje="Se esperaba '=' en la asignacion")
         nodo.agregar(self.sent_expresion())
         return nodo
 
     def sent_expresion(self):
         """sent_expresion -> expresion ; | ;"""
-        nodo = ASTNode("SentExpresion")
+        nodo = self.nodo("SentExpresion")
         if self.es(";"):
             self.avanzar()
             return nodo
@@ -222,31 +230,31 @@ class Parser:
 
     def seleccion(self):
         """seleccion -> if expresion then lista_sentencias [else lista_sentencias] end"""
-        nodo = ASTNode("Seleccion")
+        nodo = self.nodo("Seleccion")
         self.coincidir("if")
         nodo.agregar(self.expresion())
         self.coincidir("then", mensaje="Se esperaba 'then' en la sentencia if")
-        nodo.agregar(ASTNode("Then").agregar(self.lista_declaracion({"else", "end", "EOF"})))
+        nodo.agregar(self.nodo("Then").agregar(self.lista_declaracion({"else", "end", "EOF"})))
         if self.es("else"):
             self.avanzar()
-            nodo.agregar(ASTNode("Else").agregar(self.lista_declaracion({"end", "EOF"})))
+            nodo.agregar(self.nodo("Else").agregar(self.lista_declaracion({"end", "EOF"})))
         self.coincidir("end", mensaje="Se esperaba 'end' para cerrar el if")
         return nodo
 
     def iteracion(self):
         """iteracion -> while expresion lista_sentencias end"""
-        nodo = ASTNode("IteracionWhile")
+        nodo = self.nodo("IteracionWhile")
         self.coincidir("while")
         nodo.agregar(self.expresion())
-        nodo.agregar(ASTNode("Cuerpo").agregar(self.lista_declaracion({"end", "EOF"})))
+        nodo.agregar(self.nodo("Cuerpo").agregar(self.lista_declaracion({"end", "EOF"})))
         self.coincidir("end", mensaje="Se esperaba 'end' para cerrar el while")
         return nodo
 
     def repeticion(self):
         """repeticion -> do lista_sentencias while expresion ;"""
-        nodo = ASTNode("RepeticionDoWhile")
+        nodo = self.nodo("RepeticionDoWhile")
         self.coincidir("do")
-        nodo.agregar(ASTNode("Cuerpo").agregar(self.lista_declaracion({"while", "EOF"})))
+        nodo.agregar(self.nodo("Cuerpo").agregar(self.lista_declaracion({"while", "EOF"})))
         self.coincidir("while", mensaje="Se esperaba 'while' para cerrar el do")
         nodo.agregar(self.expresion())
         self.coincidir(";", mensaje="Falta ';' al final del do-while")
@@ -254,18 +262,18 @@ class Parser:
 
     def sent_in(self):
         """sent_in -> cin >> id ;"""
-        nodo = ASTNode("Entrada")
+        nodo = self.nodo("Entrada")
         self.coincidir("cin")
         self.coincidir(">>", mensaje="Se esperaba operador de entrada '>>'")
         tok = self.coincidir(tipo="IDENTIFICADOR", mensaje="Se esperaba identificador despues de '>>'")
         if tok:
-            nodo.agregar(ASTNode("Identificador", tok["token"], "id"))
+            nodo.agregar(self.nodo("Identificador", tok["token"], "id", token=tok))
         self.coincidir(";", mensaje="Falta ';' al final de cin")
         return nodo
 
     def sent_out(self):
         """sent_out -> cout << salida ;"""
-        nodo = ASTNode("Salida")
+        nodo = self.nodo("Salida")
         self.coincidir("cout")
         self.coincidir("<<", mensaje="Se esperaba operador de salida '<<'")
         nodo.agregar(self.salida())
@@ -274,10 +282,10 @@ class Parser:
 
     def salida(self):
         """salida -> cadena | expresion | cadena << expresion | expresion << cadena"""
-        nodo = ASTNode("ContenidoSalida")
+        nodo = self.nodo("ContenidoSalida")
         if self.es(tipo="CADENA"):
             tok = self.avanzar()
-            nodo.agregar(ASTNode("Cadena", tok["token"], "cadena"))
+            nodo.agregar(self.nodo("Cadena", tok["token"], "cadena", token=tok))
             if self.es("<<"):
                 self.avanzar()
                 nodo.agregar(self.expresion())
@@ -288,7 +296,7 @@ class Parser:
             self.avanzar()
             tok = self.coincidir(tipo="CADENA", mensaje="Despues de '<<' se esperaba una cadena")
             if tok:
-                nodo.agregar(ASTNode("Cadena", tok["token"], "cadena"))
+                nodo.agregar(self.nodo("Cadena", tok["token"], "cadena", token=tok))
         return nodo
 
     def expresion(self):
@@ -300,7 +308,7 @@ class Parser:
         nodo = self.expresion_logica_and()
         while self.actual()["token"] == "||":
             op = self.avanzar()
-            nuevo = ASTNode("OperacionLogica", op["token"], "op_logico")
+            nuevo = self.nodo("OperacionLogica", op["token"], "op_logico", token=op)
             nuevo.agregar(nodo)
             nuevo.agregar(self.expresion_logica_and())
             nodo = nuevo
@@ -311,7 +319,7 @@ class Parser:
         nodo = self.expresion_relacional()
         while self.actual()["token"] == "&&":
             op = self.avanzar()
-            nuevo = ASTNode("OperacionLogica", op["token"], "op_logico")
+            nuevo = self.nodo("OperacionLogica", op["token"], "op_logico", token=op)
             nuevo.agregar(nodo)
             nuevo.agregar(self.expresion_relacional())
             nodo = nuevo
@@ -322,7 +330,7 @@ class Parser:
         nodo = self.expresion_simple()
         if self.actual()["token"] in {"<", "<=", ">", ">=", "==", "!="}:
             op = self.avanzar()
-            nuevo = ASTNode("OperacionRelacional", op["token"], "rel_op")
+            nuevo = self.nodo("OperacionRelacional", op["token"], "rel_op", token=op)
             nuevo.agregar(nodo)
             nuevo.agregar(self.expresion_simple())
             nodo = nuevo
@@ -334,11 +342,11 @@ class Parser:
         while self.actual()["token"] in {"+", "-", "++", "--"}:
             op = self.avanzar()
             if op["token"] in {"++", "--"} and self.es_fin_expresion_simple():
-                nuevo = ASTNode("OperacionIncremento", op["token"], "suma_op")
+                nuevo = self.nodo("OperacionIncremento", op["token"], "suma_op", token=op)
                 nuevo.agregar(nodo)
                 nodo = nuevo
                 continue
-            nuevo = ASTNode("OperacionSuma", op["token"], "suma_op")
+            nuevo = self.nodo("OperacionSuma", op["token"], "suma_op", token=op)
             nuevo.agregar(nodo)
             nuevo.agregar(self.termino())
             nodo = nuevo
@@ -349,6 +357,7 @@ class Parser:
         return self.actual()["token"] in {
             ";", ")", "then", "else", "end", "while", "}", "<<",
             "<", "<=", ">", ">=", "==", "!=", "EOF",
+            "&&", "||", ",",
         }
 
     def termino(self):
@@ -356,7 +365,7 @@ class Parser:
         nodo = self.factor()
         while self.actual()["token"] in {"*", "/", "%"}:
             op = self.avanzar()
-            nuevo = ASTNode("OperacionMultiplicacion", op["token"], "mult_op")
+            nuevo = self.nodo("OperacionMultiplicacion", op["token"], "mult_op", token=op)
             nuevo.agregar(nodo)
             nuevo.agregar(self.factor())
             nodo = nuevo
@@ -367,7 +376,7 @@ class Parser:
         nodo = self.componente()
         while self.es("^"):
             op = self.avanzar()
-            nuevo = ASTNode("OperacionPotencia", op["token"], "pot_op")
+            nuevo = self.nodo("OperacionPotencia", op["token"], "pot_op", token=op)
             nuevo.agregar(nodo)
             nuevo.agregar(self.componente())
             nodo = nuevo
@@ -379,29 +388,29 @@ class Parser:
 
         if token["token"] == "!":
             op = self.avanzar()
-            return ASTNode("OperacionLogica", op["token"], "op_logico").agregar(self.componente())
+            return self.nodo("OperacionLogica", op["token"], "op_logico", token=op).agregar(self.componente())
 
         if self.es("("):
             self.avanzar()
-            nodo = ASTNode("Grupo").agregar(self.expresion())
+            nodo = self.nodo("Grupo", token=token).agregar(self.expresion())
             self.coincidir(")", mensaje="Se esperaba ')' para cerrar la expresion")
             return nodo
 
         if token["tipo"] in {"NUMERO_ENTERO", "NUMERO_REAL"}:
             self.avanzar()
-            return ASTNode("Numero", token["token"], token["tipo"])
+            return self.nodo("Numero", token["token"], token["tipo"], token=token)
 
         if token["tipo"] == "IDENTIFICADOR":
             self.avanzar()
-            return ASTNode("Identificador", token["token"], "id")
+            return self.nodo("Identificador", token["token"], "id", token=token)
 
         if token["token"] in {"true", "false"}:
             self.avanzar()
-            return ASTNode("Booleano", token["token"], "bool")
+            return self.nodo("Booleano", token["token"], "bool", token=token)
 
         self.error(f"Se esperaba componente de expresion y se encontro '{token['token']}'")
         self.avanzar()
-        return ASTNode("ErrorComponente", token["token"], "error")
+        return self.nodo("ErrorComponente", token["token"], "error", token=token)
 
 
 

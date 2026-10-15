@@ -1,0 +1,10 @@
+Tabla semantica
+ID	Nombre	Tipo	Lineas	Columna	Ambito	Desplazamiento	Declarado	Inicializado
+1	x	int	2,6,7,12,30,31,32,34,36,37,40,53,55,55,57,58,59	9	global	0	True	True
+2	y	int	2,8,9,10,10,13,15,25,25,35,35,40,47,58	12	global	1	True	True
+3	z	int	2,9,14,42,43,43,44,58	15	global	2	True	True
+4	suma	int	2,5,20,31	18	global	3	True	True
+5	mas	int	2,38,48	24	global	4	True	False
+6	a	float	3,11,17,18,28	11	global	5	True	True
+7	b	float	3,17,18,21,23	14	global	6	True	True
+8	c	float	3,29	24	global	7	True	True

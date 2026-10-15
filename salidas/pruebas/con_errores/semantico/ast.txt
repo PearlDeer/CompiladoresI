@@ -1,0 +1,40 @@
+Programa
+  ListaDeclaracion
+    DeclaracionVariable
+      Tipo: int [tipo]
+      Identificadores
+        Identificador: x [id]
+    DeclaracionVariable
+      Tipo: float [tipo]
+      Identificadores
+        Identificador: y [id]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        OperacionSuma: + [suma_op]
+          Numero: 5 [NUMERO_ENTERO]
+          ErrorComponente: ; [error]
+    Seleccion
+      OperacionRelacional: > [rel_op]
+        Identificador: x [id]
+        ErrorComponente: then [error]
+      Then
+        ListaDeclaracion
+          Salida
+            ContenidoSalida
+              Cadena: "x" [cadena]
+      Else
+        ListaDeclaracion
+          Entrada
+    IteracionWhile
+      OperacionRelacional: < [rel_op]
+        Identificador: x [id]
+        Numero: 10 [NUMERO_ENTERO]
+      Cuerpo
+        ListaDeclaracion
+          Asignacion
+            Identificador: x [id]
+            SentExpresion
+              OperacionSuma: + [suma_op]
+                Identificador: x [id]
+                Numero: 1 [NUMERO_ENTERO]

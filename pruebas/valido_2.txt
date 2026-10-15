@@ -12,7 +12,7 @@ main {
 
   do
     total = total * 2;
-  while total < 50
+  while total < 50;
 
   cout << total << " listo";
 }

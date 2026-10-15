@@ -1,0 +1,13 @@
+Error Sintactico [] - Linea 2, Columna 10: Se esperaba identificador despues de ','
+Error Sintactico [] - Linea 5, Columna 3: Falta ';' al final de la declaracion de variable
+Error Sintactico [] - Linea 5, Columna 11: Se esperaba componente de expresion y se encontro ';'
+Error Sintactico [] - Linea 7, Columna 3: Falta ';' al final de la expresion
+Error Sintactico [] - Linea 7, Columna 10: Se esperaba componente de expresion y se encontro 'then'
+Error Sintactico [] - Linea 8, Columna 5: Se esperaba 'then' en la sentencia if
+Error Sintactico [] - Linea 10, Columna 9: Se esperaba operador de entrada '>>'
+Error Sintactico [] - Linea 10, Columna 9: Se esperaba identificador despues de '>>'
+Error Sintactico [] - Linea 10, Columna 9: Falta ';' al final de cin
+Error Sintactico [] - Linea 10, Columna 9: Sentencia no valida cerca de '>'
+Error Sintactico [] - Linea 15, Columna 1: Sentencia no valida cerca de '}'
+Error Sintactico [] - Linea 15, Columna 2: Se esperaba 'end' para cerrar el while
+Error Sintactico [] - Linea 15, Columna 2: Se esperaba '}' para cerrar main

@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.9.1",
+    "nodo_contexto": "0.0.9",
+    "motivo": "asignacion",
+    "linea": 11,
+    "columna": 10
+  }
+]

@@ -1,0 +1,54 @@
+Programa
+  ListaDeclaracion
+    DeclaracionVariable
+      Tipo: int [tipo]
+      Identificadores
+        Identificador: x [id]
+        Identificador: y [id]
+    DeclaracionVariable
+      Tipo: float [tipo]
+      Identificadores
+        Identificador: promedio [id]
+    DeclaracionVariable
+      Tipo: bool [tipo]
+      Identificadores
+        Identificador: activo [id]
+    Asignacion
+      Identificador: x [id]
+      SentExpresion
+        Numero: 10 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: y [id]
+      SentExpresion
+        OperacionSuma: + [suma_op]
+          Identificador: x [id]
+          OperacionMultiplicacion: * [mult_op]
+            Numero: 5 [NUMERO_ENTERO]
+            Numero: 2 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: promedio [id]
+      SentExpresion
+        OperacionMultiplicacion: / [mult_op]
+          Grupo
+            OperacionSuma: + [suma_op]
+              Identificador: y [id]
+              Numero: 3.5 [NUMERO_REAL]
+          Numero: 2 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: activo [id]
+      SentExpresion
+        Booleano: true [bool]
+    Seleccion
+      OperacionRelacional: >= [rel_op]
+        Identificador: y [id]
+        Numero: 10 [NUMERO_ENTERO]
+      Then
+        ListaDeclaracion
+          Salida
+            ContenidoSalida
+              Cadena: "valor de y" [cadena]
+              Identificador: y [id]
+      Else
+        ListaDeclaracion
+          Entrada
+            Identificador: x [id]

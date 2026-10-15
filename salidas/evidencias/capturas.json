@@ -1,0 +1,72 @@
+[
+  {
+    "archivo": "ide_ast_semantico_valido.png",
+    "fuente": "pruebas/semantico_valido.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_comparacion_ast.png",
+    "fuente": "pruebas/semantico_valido.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_valores_propagados.png",
+    "fuente": "testlexico.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_booleano_historico.png",
+    "fuente": "testlexico.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_tabla_historico.png",
+    "fuente": "testlexico.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_maestro_desconocido.png",
+    "fuente": "pruebas/maestro_condiciones_original.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_maestro_true_false.png",
+    "fuente": "pruebas/maestro_condiciones_valido.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_maestro_bucle_false.png",
+    "fuente": "pruebas/maestro_condiciones_valido.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_errores_semanticos.png",
+    "fuente": "pruebas/semantico_errores.txt",
+    "ancho": 1600,
+    "alto": 1000,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  },
+  {
+    "archivo": "ide_compacto.png",
+    "fuente": "pruebas/semantico_errores.txt",
+    "ancho": 1280,
+    "alto": 800,
+    "modo": "Qt offscreen; widgets reales y compilador externo"
+  }
+]

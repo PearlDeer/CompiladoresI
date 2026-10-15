@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.8.1.0.0.0.0.1",
+    "nodo_contexto": "0.0.8.1.0.0.0.0",
+    "motivo": "operandos mixtos",
+    "linea": 11,
+    "columna": 16
+  },
+  {
+    "id": 2,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.8.1.0.0.0.1",
+    "nodo_contexto": "0.0.8.1.0.0.0",
+    "motivo": "operandos mixtos",
+    "linea": 11,
+    "columna": 26
+  },
+  {
+    "id": 3,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.8.1.0.0.1",
+    "nodo_contexto": "0.0.8.1.0.0",
+    "motivo": "operandos mixtos",
+    "linea": 11,
+    "columna": 32
+  },
+  {
+    "id": 4,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.8.1.0.1",
+    "nodo_contexto": "0.0.8.1.0",
+    "motivo": "operandos mixtos",
+    "linea": 11,
+    "columna": 37
+  },
+  {
+    "id": 5,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.13.1.0.0.1.0.1",
+    "nodo_contexto": "0.0.13.1.0.0.1.0",
+    "motivo": "operandos mixtos",
+    "linea": 18,
+    "columna": 17
+  }
+]

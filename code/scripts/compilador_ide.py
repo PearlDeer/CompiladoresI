@@ -8,7 +8,6 @@ Comunicacion IDE <-> Compilador via archivos temporales / parametros.
 
 import sys
 import os
-import subprocess
 import json
 import tempfile
 from PyQt6.QtWidgets import (
@@ -17,14 +16,14 @@ from PyQt6.QtWidgets import (
     QStatusBar, QLabel, QVBoxLayout, QHBoxLayout,
     QTreeWidget, QTreeWidgetItem, QTableWidget,
     QTableWidgetItem, QHeaderView, QSplitter, QMessageBox,
-    QTextEdit
+    QTextEdit, QToolTip
 )
 from PyQt6.QtGui import (
     QAction, QPainter, QColor, QTextFormat, QFont,
     QSyntaxHighlighter, QTextCharFormat, QIcon, QKeySequence,
     QTextCursor
 )
-from PyQt6.QtCore import Qt, QRect, QSize, QRegularExpression, QProcess
+from PyQt6.QtCore import Qt, QRect, QSize, QRegularExpression, QProcess, QTimer, QEvent
 
 
 # =============================================================================
@@ -204,6 +203,10 @@ QHeaderView::section {{
     font-weight: bold;
     font-size: 11px;
     text-transform: uppercase;
+}}
+
+QHeaderView {{
+    background-color: {Colores.FONDO_BARRA};
 }}
 
 QTreeWidget {{
@@ -677,7 +680,23 @@ def crear_panel_errores(columnas=None):
     """Crea una tabla estandar para mostrar errores."""
     if columnas is None:
         columnas = ["Linea", "Columna", "Tipo", "Descripcion"]
-    return crear_tabla(columnas)
+    tabla = crear_tabla(columnas)
+    for columna in range(len(columnas) - 1):
+        tabla.horizontalHeader().setSectionResizeMode(columna, QHeaderView.ResizeMode.ResizeToContents)
+    return tabla
+
+
+def crear_arbol(titulo, anotado=False):
+    arbol = QTreeWidget()
+    arbol.setHeaderLabels([titulo, "Tipo calculado", "Valor calculado", "Ubicacion", "Detalle de evaluacion"]
+                          if anotado else [titulo, "Resultado booleano", "Detalle de evaluacion"])
+    arbol.setWordWrap(False)
+    arbol.setTextElideMode(Qt.TextElideMode.ElideRight)
+    arbol.header().setStretchLastSection(False)
+    arbol.header().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
+    arbol.header().setSectionResizeMode(0, QHeaderView.ResizeMode.Interactive)
+    arbol.setColumnWidth(0, 320 if anotado else 450)
+    return arbol
 
 
 # =============================================================================
@@ -696,6 +715,20 @@ class VentanaPrincipal(QMainWindow):
 
         self.ruta_archivo = None
         self.archivo_modificado = False
+        self.proceso_compilador = None
+        self.ultimo_resultado = None
+        self._temporales_compilacion = []
+        self._archivo_salida = None
+        self._codigo_en_analisis = ""
+        self._timeout_compilador = False
+        directorio_scripts = os.path.dirname(os.path.abspath(__file__))
+        self.ruta_compilador = os.path.join(directorio_scripts, "compilador.py")
+        self.directorio_salidas = os.path.abspath(os.path.join(directorio_scripts, "..", "..", "salidas"))
+        self.timer_compilador = QTimer(self)
+        self.timer_compilador.setSingleShot(True)
+        self.timer_compilador.timeout.connect(self._agotar_tiempo)
+        self._items_arbol = {}
+        self._atributos_semanticos = {}
 
         # ----- Editor central -----
         self.editor = EditorCodigo()
@@ -705,6 +738,9 @@ class VentanaPrincipal(QMainWindow):
 
         # ----- Crear paneles de resultados -----
         self._crear_paneles()
+        for panel in (self.tabs_derecho, self.tabs_inferior):
+            for widget in [panel, *panel.findChildren(QWidget)]:
+                widget.installEventFilter(self)
 
         # ----- Menu -----
         self._crear_menu()
@@ -738,22 +774,30 @@ class VentanaPrincipal(QMainWindow):
         self.tabs_derecho.addTab(self.tabla_lexico, "Lexico")
 
         # Tab: Sintactico
-        self.arbol_sintactico = QTreeWidget()
-        self.arbol_sintactico.setColumnCount(1)
-        self.arbol_sintactico.setHeaderLabels(["Arbol Sintactico Abstracto"])
-        self.arbol_sintactico.setAlternatingRowColors(False)
-        self.arbol_sintactico.setWordWrap(False)
-        self.arbol_sintactico.setTextElideMode(Qt.TextElideMode.ElideNone)
-        self.arbol_sintactico.header().setStretchLastSection(True)
-        self.arbol_sintactico.header().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.ResizeToContents
-        )
+        self.arbol_sintactico = crear_arbol("Arbol Sintactico Abstracto")
         self.tabs_derecho.addTab(self.arbol_sintactico, "Sintactico")
+
+        self.arbol_semantico = crear_arbol("Arbol Anotado", True)
+        self.tabs_derecho.addTab(self.arbol_semantico, "AST Semantico")
+        self.comparacion_ast = QSplitter(Qt.Orientation.Horizontal)
+        self.arbol_comparacion_original = crear_arbol("AST Original")
+        self.arbol_comparacion_anotado = crear_arbol("AST Anotado", True)
+        self.arbol_comparacion_original.setColumnWidth(0, 330)
+        self.arbol_comparacion_anotado.setColumnWidth(0, 270)
+        self.comparacion_ast.addWidget(self.arbol_comparacion_original)
+        self.comparacion_ast.addWidget(self.arbol_comparacion_anotado)
+        self.comparacion_ast.setChildrenCollapsible(False)
+        self.tabs_derecho.addTab(self.comparacion_ast, "Comparar AST")
+        for origen, destino in ((self.arbol_comparacion_original, self.arbol_comparacion_anotado),
+                                (self.arbol_comparacion_anotado, self.arbol_comparacion_original)):
+            origen.itemSelectionChanged.connect(
+                lambda o=origen, d=destino: self._sincronizar_seleccion(o, d))
 
         # Tab: Tabla de Simbolos
         self.tabla_simbolos = crear_tabla(
-            ["ID", "Nombre", "Tipo", "Valor", "Scope", "Linea"]
+            ["ID", "Nombre", "Tipo", "Lineas", "Columna", "Ambito", "Desplazamiento", "Inicializado"]
         )
+        self.tabla_simbolos.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         self.tabs_derecho.addTab(self.tabla_simbolos, "Tabla de Simbolos")
 
         self.dock_derecho.setWidget(self.tabs_derecho)
@@ -778,6 +822,8 @@ class VentanaPrincipal(QMainWindow):
         self.tabs_inferior.addTab(
             self.tabla_err_sintactico, "Errores Sintacticos"
         )
+        self.tabla_err_semantico = crear_panel_errores()
+        self.tabs_inferior.addTab(self.tabla_err_semantico, "Errores Semanticos")
 
         # Tab: Resultados generales
         self.texto_resultados = QPlainTextEdit()
@@ -935,13 +981,14 @@ class VentanaPrincipal(QMainWindow):
         nombre = os.path.basename(self.ruta_archivo) if self.ruta_archivo else "Sin titulo"
         modificado = " *" if self.archivo_modificado else ""
         self.setWindowTitle(f"{nombre}{modificado} - IDE Compilador")
-        nombre_archivo = self.ruta_archivo if self.ruta_archivo else "Sin archivo"
-        self.label_archivo.setText(nombre_archivo)
+        self.label_archivo.setText(nombre)
 
     def _on_texto_cambiado(self):
         """Marca el archivo como modificado cuando cambia el texto."""
         self.archivo_modificado = True
         self._actualizar_titulo()
+        if self.ultimo_resultado is not None and self.editor.toPlainText() != self._codigo_en_analisis:
+            self.label_estado.setText("Resultados de una version anterior del codigo")
 
     def _actualizar_pos_cursor(self):
         """Actualiza la posicion del cursor en la barra de estado."""
@@ -1057,6 +1104,15 @@ class VentanaPrincipal(QMainWindow):
     def closeEvent(self, event):
         """Confirma antes de cerrar la aplicacion."""
         if self._confirmar_si_no_guardado():
+            self.timer_compilador.stop()
+            if self.proceso_compilador is not None:
+                self.proceso_compilador.blockSignals(True)
+                self.proceso_compilador.kill()
+                self.proceso_compilador.waitForFinished(1000)
+                self.proceso_compilador = None
+            for ruta in self._temporales_compilacion:
+                self._limpiar_temporal(ruta)
+            self._temporales_compilacion = []
             event.accept()
         else:
             event.ignore()
@@ -1068,9 +1124,15 @@ class VentanaPrincipal(QMainWindow):
         """Limpia todos los paneles de resultados y errores."""
         self.tabla_lexico.setRowCount(0)
         self.arbol_sintactico.clear()
+        self.arbol_semantico.clear()
+        self.arbol_comparacion_original.clear()
+        self.arbol_comparacion_anotado.clear()
+        self._items_arbol.clear()
+        self._atributos_semanticos.clear()
         self.tabla_simbolos.setRowCount(0)
         self.tabla_err_lexico.setRowCount(0)
         self.tabla_err_sintactico.setRowCount(0)
+        self.tabla_err_semantico.setRowCount(0)
         self.texto_resultados.clear()
 
     # -----------------------------------------------------------------
@@ -1093,112 +1155,81 @@ class VentanaPrincipal(QMainWindow):
         return ruta
 
     def _invocar_compilador(self, fase, archivo_entrada):
-        """Invoca al compilador externo como proceso independiente.
+        """Inicia el compilador externo y recibe el JSON sin bloquear el editor."""
+        self._fase_compilacion = fase
+        if not os.path.isfile(self.ruta_compilador):
+            self._finalizar_analisis(self._error_ejecucion("No se encontro scripts/compilador.py"))
+            return None
+        fd, self._archivo_salida = tempfile.mkstemp(suffix=".json", prefix="ide_out_")
+        os.close(fd)
+        self._temporales_compilacion.append(self._archivo_salida)
+        proceso = QProcess(self)
+        self.proceso_compilador = proceso
+        proceso.setProgram(sys.executable)
+        proceso.setArguments(["-B", "-X", "utf8", self.ruta_compilador, fase,
+                              archivo_entrada, self._archivo_salida,
+                              "--salidas", self.directorio_salidas])
+        proceso.finished.connect(self._termino_compilador)
+        proceso.errorOccurred.connect(self._error_proceso)
+        self._timeout_compilador = False
+        self.timer_compilador.start(30000)
+        proceso.start()
+        return proceso
 
-        El compilador se ejecuta como:
-            python compilador.py <fase> <archivo_entrada> <archivo_salida>
+    def _error_ejecucion(self, descripcion):
+        error = {"linea": 0, "columna": 0, "tipo": "Error de ejecucion",
+                 "descripcion": descripcion}
+        return {"errores_ejecucion": [error], "errores": [error],
+                "estado": "bloqueado", "estado_semantico": "bloqueado", "valido": False}
 
-        Donde <fase> puede ser: lexico o sintactico.
+    def _error_proceso(self, error):
+        if error == QProcess.ProcessError.FailedToStart and self.proceso_compilador is not None:
+            self._finalizar_analisis(self._error_ejecucion(self.proceso_compilador.errorString()))
 
-        El compilador escribe su salida en formato JSON al archivo de salida.
-        La interfaz no realiza analisis lexico ni sintactico; solo invoca el
-        compilador externo y muestra sus resultados.
+    def _agotar_tiempo(self):
+        if self.proceso_compilador is not None:
+            self._timeout_compilador = True
+            self.proceso_compilador.kill()
 
-        Args:
-            fase: Nombre de la fase a ejecutar
-            archivo_entrada: Ruta del archivo fuente temporal
-
-        Returns:
-            dict con los resultados o None si hubo error
-        """
-        fd_out, archivo_salida = tempfile.mkstemp(
-            suffix=".json", prefix="ide_out_"
-        )
-        os.close(fd_out)
-
-        # Buscar compilador externo
-        directorio_ide = os.path.dirname(os.path.abspath(__file__))
-        compilador_path = os.path.join(directorio_ide, "compilador.py")
-
-        if os.path.exists(compilador_path):
-            # ------- Compilador externo existe: system call -------
-            try:
-                resultado = subprocess.run(
-                    [
-                        sys.executable, compilador_path,
-                        fase, archivo_entrada, archivo_salida
-                    ],
-                    capture_output=True,
-                    text=True,
-                    timeout=30
-                )
-
-                if os.path.exists(archivo_salida):
-                    with open(archivo_salida, "r", encoding="utf-8") as f:
-                        contenido = f.read().strip()
-                        if contenido:
-                            return json.loads(contenido)
-
-                # Si no genero archivo, intentar leer de stdout
-                if resultado.stdout.strip():
-                    try:
-                        return json.loads(resultado.stdout.strip())
-                    except json.JSONDecodeError:
-                        return {
-                            "salida": resultado.stdout,
-                            "errores": resultado.stderr
-                        }
-
-                if resultado.returncode != 0:
-                    return {
-                        "errores": [
-                            {
-                                "linea": 0,
-                                "columna": 0,
-                                "tipo": "Error del compilador",
-                                "descripcion": resultado.stderr or "Error desconocido"
-                            }
-                        ]
-                    }
-
-            except subprocess.TimeoutExpired:
-                return {
-                    "errores": [
-                        {
-                            "linea": 0,
-                            "columna": 0,
-                            "tipo": "Timeout",
-                            "descripcion": "El compilador excedio el tiempo limite (30s)"
-                        }
-                    ]
-                }
-            except Exception as e:
-                return {
-                    "errores": [
-                        {
-                            "linea": 0,
-                            "columna": 0,
-                            "tipo": "Error de ejecucion",
-                            "descripcion": str(e)
-                        }
-                    ]
-                }
-            finally:
-                self._limpiar_temporal(archivo_salida)
-
+    def _termino_compilador(self, codigo_salida, estado_salida):
+        proceso = self.proceso_compilador
+        if proceso is None:
+            return
+        self.timer_compilador.stop()
+        if self._timeout_compilador:
+            resultado = self._error_ejecucion("El compilador excedio el tiempo limite (30s)")
         else:
-            # ------- Compilador externo NO existe -------
-            self._limpiar_temporal(archivo_salida)
-            return {
-                "errores": [
-                    {
-                        "linea": 0,
-                        "columna": 0,
-                        "tipo": "Error del compilador",
-                        "descripcion": "No se encontro scripts/compilador.py"
-                    }
-                ]
-            }
+            try:
+                with open(self._archivo_salida, "r", encoding="utf-8") as archivo:
+                    contenido = archivo.read().strip()
+                if not contenido:
+                    contenido = bytes(proceso.readAllStandardOutput()).decode("utf-8")
+                resultado = json.loads(contenido)
+                if not isinstance(resultado, dict):
+                    raise ValueError("La respuesta del compilador debe ser un objeto JSON")
+                if codigo_salida != 0 or estado_salida != QProcess.ExitStatus.NormalExit:
+                    if not resultado.get("errores_ejecucion"):
+                        raise ValueError("El proceso del compilador termino con error")
+            except (OSError, UnicodeError, ValueError) as error:
+                detalle = bytes(proceso.readAllStandardError()).decode("utf-8", errors="replace").strip()
+                resultado = self._error_ejecucion(detalle or str(error))
+        self._finalizar_analisis(resultado)
+
+    def _finalizar_analisis(self, resultado):
+        self.timer_compilador.stop()
+        proceso = self.proceso_compilador
+        self.proceso_compilador = None
+        self.ultimo_resultado = resultado
+        self._procesar_resultado(resultado, self._fase_compilacion)
+        if self.editor.toPlainText() != self._codigo_en_analisis:
+            self.label_estado.setText("Resultados de una version anterior del codigo")
+        self.act_ejecutar.setEnabled(True)
+        for ruta in self._temporales_compilacion:
+            self._limpiar_temporal(ruta)
+        self._temporales_compilacion = []
+        self._archivo_salida = None
+        if proceso is not None:
+            proceso.deleteLater()
 
     def _limpiar_temporal(self, ruta):
         """Elimina un archivo temporal de forma segura."""
@@ -1211,6 +1242,28 @@ class VentanaPrincipal(QMainWindow):
     # -----------------------------------------------------------------
     # Mostrar resultados en los paneles
     # -----------------------------------------------------------------
+    def eventFilter(self, objeto, evento):
+        if evento.type() == QEvent.Type.ToolTip:
+            QToolTip.hideText()
+            return True
+        return super().eventFilter(objeto, evento)
+
+    def _texto_valor(self, atributos, clase=""):
+        if clase == "Tipo":
+            return ""
+        if "resultado_condicion" in atributos:
+            valor = atributos["resultado_condicion"]
+            texto = "desconocido" if valor is None else json.dumps(valor)
+            if not atributos.get("condicion_valida", True):
+                texto = "no evaluable"
+        elif atributos.get("es_constante"):
+            texto = json.dumps(atributos["valor_constante"], ensure_ascii=False)
+        elif atributos.get("tipo_calculado") in {"int", "float", "bool", "cadena"}:
+            texto = "desconocido"
+        else:
+            return ""
+        return texto
+
     def _mostrar_tokens(self, tokens):
         """Muestra la lista de tokens en la tabla de Lexico."""
         self.tabla_lexico.setRowCount(0)
@@ -1223,43 +1276,83 @@ class VentanaPrincipal(QMainWindow):
             self.tabla_lexico.setItem(row, 3, QTableWidgetItem(str(tok.get("linea", ""))))
             self.tabla_lexico.setItem(row, 4, QTableWidgetItem(str(tok.get("columna", ""))))
 
-    def _mostrar_arbol(self, nodo, parent_item=None):
-        """Muestra el arbol sintactico de forma recursiva en el QTreeWidget."""
-        texto_nodo = nodo.get("nodo", "")
-        texto_valor = nodo.get("valor", "")
-        texto_tipo = nodo.get("tipo", "")
-        partes = [texto_nodo]
-        if texto_valor:
-            partes.append(f"valor: {texto_valor}")
-        if texto_tipo:
-            partes.append(f"tipo: {texto_tipo}")
+    def _detalle_evaluacion(self, atributos):
+        if "resultado_booleano" in atributos or "resultado_condicion" in atributos:
+            resultado = atributos.get("resultado_condicion", atributos.get("resultado_booleano"))
+            if atributos.get("condicion_valida", True) and isinstance(resultado, bool):
+                return json.dumps(resultado)
+            estado = "desconocido" if atributos.get("condicion_valida", True) else "no evaluable"
+            motivo = atributos.get("motivo_desconocido", "")
+            return estado + (": " + motivo if motivo else "")
+        if atributos.get("motivo_desconocido"):
+            return atributos["motivo_desconocido"]
+        operandos = atributos.get("operandos_evaluados", [])
+        return " | ".join(json.dumps(o["valor"], ensure_ascii=False) if o["conocido"]
+                          else "desconocido" for o in operandos)
+
+    def _mostrar_arbol(self, nodo, parent_item=None, *, arbol=None, anotado=False, ruta="0"):
+        if not nodo:
+            return
+        arbol = self.arbol_sintactico if arbol is None else arbol
+        partes = [nodo.get("nodo", "")]
+        if nodo.get("valor"):
+            partes.append("valor: " + nodo["valor"])
+        if nodo.get("tipo"):
+            partes.append("tipo: " + nodo["tipo"])
         etiqueta = " | ".join(partes)
-
-        if parent_item is None:
-            item = QTreeWidgetItem(self.arbol_sintactico)
-        else:
-            item = QTreeWidgetItem(parent_item)
-
+        item = QTreeWidgetItem(arbol if parent_item is None else parent_item)
         item.setText(0, etiqueta)
-        item.setToolTip(0, etiqueta)
-
-        for hijo in nodo.get("hijos", []):
-            self._mostrar_arbol(hijo, item)
-
+        item.setData(0, Qt.ItemDataRole.UserRole, ruta)
+        self._items_arbol.setdefault(arbol, {})[ruta] = item
+        atributos = nodo.get("atributos", {})
+        if anotado:
+            tipo = atributos.get("tipo_calculado", "")
+            if atributos.get("tipo_contextual"):
+                tipo += " -> " + atributos["tipo_contextual"]
+            declarado = atributos.get("tipo_declarado")
+            if declarado and declarado != atributos.get("tipo_calculado"):
+                tipo += " (declarado " + declarado + ")"
+            item.setText(1, tipo)
+            item.setText(2, self._texto_valor(atributos, nodo.get("nodo", "")))
+            item.setText(3, f"{nodo.get('linea', 0)}:{nodo.get('columna', 0)}")
+            item.setText(4, self._detalle_evaluacion(atributos))
+        else:
+            calculados = self._atributos_semanticos.get(ruta, {})
+            if (calculados.get("tipo_calculado") == "bool" and nodo.get("nodo") != "Tipo") or "resultado_condicion" in calculados:
+                item.setText(1, self._texto_valor(calculados, nodo.get("nodo", "")))
+                item.setText(2, self._detalle_evaluacion(calculados))
+        for columna in range(arbol.columnCount()):
+            if atributos.get("tipo_calculado") == "error":
+                item.setForeground(columna, QColor(Colores.ROJO))
+        for i, hijo in enumerate(nodo.get("hijos", [])):
+            self._mostrar_arbol(hijo, item, arbol=arbol, anotado=anotado, ruta=f"{ruta}.{i}")
         item.setExpanded(True)
 
+    def _sincronizar_seleccion(self, origen, destino):
+        seleccion = origen.selectedItems()
+        if not seleccion:
+            return
+        ruta = seleccion[0].data(0, Qt.ItemDataRole.UserRole)
+        item = self._items_arbol.get(destino, {}).get(ruta)
+        if item is not None:
+            anterior = destino.blockSignals(True)
+            destino.setCurrentItem(item)
+            destino.scrollToItem(item)
+            destino.blockSignals(anterior)
+
     def _mostrar_tabla_simbolos(self, simbolos):
-        """Muestra la tabla de simbolos."""
         self.tabla_simbolos.setRowCount(0)
-        for sim in simbolos:
-            row = self.tabla_simbolos.rowCount()
-            self.tabla_simbolos.insertRow(row)
-            self.tabla_simbolos.setItem(row, 0, QTableWidgetItem(str(sim.get("id", ""))))
-            self.tabla_simbolos.setItem(row, 1, QTableWidgetItem(sim.get("nombre", "")))
-            self.tabla_simbolos.setItem(row, 2, QTableWidgetItem(sim.get("tipo", "")))
-            self.tabla_simbolos.setItem(row, 3, QTableWidgetItem(str(sim.get("valor", ""))))
-            self.tabla_simbolos.setItem(row, 4, QTableWidgetItem(sim.get("scope", "")))
-            self.tabla_simbolos.setItem(row, 5, QTableWidgetItem(str(sim.get("linea", ""))))
+        for simbolo in simbolos:
+            fila = self.tabla_simbolos.rowCount()
+            self.tabla_simbolos.insertRow(fila)
+            valores = [simbolo["id"], simbolo["nombre"], simbolo["tipo"],
+                       ", ".join(map(str, simbolo.get("lineas", []))),
+                       simbolo.get("columna", ""), simbolo.get("ambito", ""),
+                       simbolo.get("desplazamiento", ""),
+                       "Si" if simbolo.get("inicializado") else "No"]
+            for columna, valor in enumerate(valores):
+                item = QTableWidgetItem(str(valor))
+                self.tabla_simbolos.setItem(fila, columna, item)
 
     def _mostrar_errores(self, errores, tabla):
         """Muestra errores en la tabla de errores correspondiente."""
@@ -1278,68 +1371,77 @@ class VentanaPrincipal(QMainWindow):
             item_desc = QTableWidgetItem(err.get("descripcion", ""))
             item_desc.setForeground(QColor(Colores.ROJO))
             tabla.setItem(row, 3, item_desc)
+        tabla.resizeRowsToContents()
 
     def _procesar_resultado(self, resultado, fase):
-        """Procesa el resultado del compilador y lo muestra en los paneles
-        correspondientes segun la fase ejecutada."""
         if resultado is None:
             return
-
-        # Tokens
-        if "tokens" in resultado:
-            self._mostrar_tokens(resultado["tokens"])
-            self.tabs_derecho.setCurrentWidget(self.tabla_lexico)
-            total = len(resultado["tokens"])
-            self.label_estado.setText(f"Analisis lexico: {total} tokens encontrados")
-
-        # Arbol sintactico
-        if "arbol" in resultado:
-            self.arbol_sintactico.clear()
-            self._mostrar_arbol(resultado["arbol"])
-            if fase == "sintactico":
-                self.tabs_derecho.setCurrentWidget(self.arbol_sintactico)
-                self.label_estado.setText("Analisis sintactico completado")
-
-        # Tabla de simbolos
-        if "tabla_simbolos" in resultado:
-            self._mostrar_tabla_simbolos(resultado["tabla_simbolos"])
-
-        # Errores
+        self._limpiar_paneles()
+        self._mostrar_tokens(resultado.get("tokens", []))
+        original = resultado.get("arbol", {})
+        anotado = resultado.get("arbol_semantico", {})
+        pendientes = [(anotado, "0")] if anotado else []
+        while pendientes:
+            nodo, ruta = pendientes.pop()
+            self._atributos_semanticos[ruta] = nodo.get("atributos", {})
+            pendientes.extend((hijo, f"{ruta}.{i}") for i, hijo in enumerate(nodo.get("hijos", [])))
+        self._mostrar_arbol(original)
+        self._mostrar_arbol(anotado, arbol=self.arbol_semantico, anotado=True)
+        self._mostrar_arbol(original, arbol=self.arbol_comparacion_original)
+        self._mostrar_arbol(anotado, arbol=self.arbol_comparacion_anotado, anotado=True)
+        if fase == "semantico":
+            self._mostrar_tabla_simbolos(resultado.get("tabla_simbolos", []))
         errores = resultado.get("errores", [])
-        errores_lex = [e for e in errores if "Lexico" in e.get("tipo", "") or "lexico" in e.get("tipo", "")]
-        errores_sin = [e for e in errores if "Sintactico" in e.get("tipo", "") or "sintactico" in e.get("tipo", "")]
-        errores_otros = [e for e in errores if e not in errores_lex and e not in errores_sin]
-
+        errores_lex = resultado.get("errores_lexicos", [e for e in errores if "lexico" in e.get("tipo", "").lower()])
+        errores_sin = resultado.get("errores_sintacticos", [e for e in errores if "sintactico" in e.get("tipo", "").lower()])
+        errores_sem = resultado.get("errores_semanticos", [e for e in errores if "semantico" in e.get("tipo", "").lower()])
+        errores_ejecucion = resultado.get("errores_ejecucion", [])
         self._mostrar_errores(errores_lex, self.tabla_err_lexico)
-        self._mostrar_errores(errores_sin + errores_otros, self.tabla_err_sintactico)
-
+        self._mostrar_errores(errores_sin, self.tabla_err_sintactico)
+        self._mostrar_errores(errores_sem, self.tabla_err_semantico)
+        estado = resultado.get("estado", "completo")
+        resumen = [f"Estado: {estado}", f"Resultado: {'valido' if resultado.get('valido') else 'no valido'}",
+                   f"Tokens: {len(resultado.get('tokens', []))}",
+                   f"Simbolos semanticos: {len(resultado.get('tabla_simbolos', [])) if fase == 'semantico' else 0}",
+                   f"Errores lexicos: {len(errores_lex)}",
+                   f"Errores sintacticos: {len(errores_sin)}",
+                   f"Errores semanticos: {len(errores_sem)}",
+                   resultado.get("motivo_semantico", "")]
+        for conversion in resultado.get("conversiones", []):
+            resumen.append(f"Conversion int -> float: linea {conversion['linea']}, "
+                           f"columna {conversion['columna']} ({conversion['motivo']})")
+        resumen.extend(e["descripcion"] for e in errores_ejecucion)
+        self.texto_resultados.setPlainText("\n".join(resumen))
+        total_errores = len(errores_lex) + len(errores_sin) + len(errores_sem) + len(errores_ejecucion)
+        self.label_estado.setText(f"Analisis {fase}: {estado} ({total_errores} errores)")
+        if anotado:
+            self.tabs_derecho.setCurrentWidget(self.arbol_semantico)
+        elif original:
+            self.tabs_derecho.setCurrentWidget(self.arbol_sintactico)
+        else:
+            self.tabs_derecho.setCurrentWidget(self.tabla_lexico)
         if errores_lex:
             self.tabs_inferior.setCurrentWidget(self.tabla_err_lexico)
         elif errores_sin:
             self.tabs_inferior.setCurrentWidget(self.tabla_err_sintactico)
-
-        # Salida generica
-        if "salida" in resultado:
-            self.texto_resultados.setPlainText(str(resultado["salida"]))
+        elif errores_sem:
+            self.tabs_inferior.setCurrentWidget(self.tabla_err_semantico)
+        else:
             self.tabs_inferior.setCurrentWidget(self.texto_resultados)
-
-    # -----------------------------------------------------------------
-    # Acciones de compilacion
-    # -----------------------------------------------------------------
     def ejecutar_analisis(self):
-        """Ejecuta lexico y sintactico en una sola accion."""
-        self._limpiar_paneles()
+        """F5 ejecuta el flujo completo en un proceso independiente."""
+        if self.proceso_compilador is not None:
+            return
         archivo = self._guardar_temporal()
-        if archivo:
-            self.label_estado.setText("Ejecutando analisis lexico y sintactico...")
-            resultado = self._invocar_compilador("sintactico", archivo)
-            self._procesar_resultado(resultado, "sintactico")
-            self.label_estado.setText("Analisis lexico y sintactico completado")
-            self._limpiar_temporal(archivo)
-
-# =============================================================================
-# Punto de entrada
-# =============================================================================
+        if archivo is None:
+            return
+        self._limpiar_paneles()
+        self.ultimo_resultado = None
+        self._codigo_en_analisis = self.editor.toPlainText()
+        self._temporales_compilacion = [archivo]
+        self.act_ejecutar.setEnabled(False)
+        self.label_estado.setText("Ejecutando analisis semantico...")
+        self._invocar_compilador("semantico", archivo)
 def main():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")

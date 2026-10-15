@@ -1,2 +1,1 @@
-Error Sintactico - Linea 40, Columna 14: Se esperaba componente de expresion y se encontro ')'
-Error Sintactico - Linea 40, Columna 15: Se esperaba ')' para cerrar la expresion
+Sin errores sintacticos.

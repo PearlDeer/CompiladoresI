@@ -1,0 +1,4 @@
+Tabla semantica
+ID	Nombre	Tipo	Lineas	Columna	Ambito	Desplazamiento	Declarado	Inicializado
+1	a	int	2,4,7,14,23	7	global	0	True	True
+2	b	int	2,5,10,16	10	global	1	True	True

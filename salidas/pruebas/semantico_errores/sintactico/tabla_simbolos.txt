@@ -1,0 +1,8 @@
+Inventario lexico de identificadores
+ID	Nombre	Tipo	Lineas	Columna	Ambito	Desplazamiento	Declarado	Inicializado
+1	x	desconocido	2		global			
+2	real	desconocido	3		global			
+3	activo	desconocido	4		global			
+4	desconocido	desconocido	6		global			
+5	ausente	desconocido	13		global			
+6	entrada_ausente	desconocido	16		global			

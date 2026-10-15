@@ -1,0 +1,52 @@
+Programa
+  ListaDeclaracion
+    DeclaracionVariable
+      Tipo: int [tipo]
+      Identificadores
+        Identificador: contador [id]
+    DeclaracionVariable
+      Tipo: float [tipo]
+      Identificadores
+        Identificador: total [id]
+    Asignacion
+      Identificador: contador [id]
+      SentExpresion
+        Numero: 0 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: total [id]
+      SentExpresion
+        Numero: 1.5 [NUMERO_REAL]
+    IteracionWhile
+      OperacionRelacional: < [rel_op]
+        Identificador: contador [id]
+        Numero: 3 [NUMERO_ENTERO]
+      Cuerpo
+        ListaDeclaracion
+          Asignacion
+            Identificador: total [id]
+            SentExpresion
+              OperacionSuma: + [suma_op]
+                Identificador: total [id]
+                Identificador: contador [id]
+          Asignacion
+            Identificador: contador [id]
+            SentExpresion
+              OperacionSuma: + [suma_op]
+                Identificador: contador [id]
+                Numero: 1 [NUMERO_ENTERO]
+    RepeticionDoWhile
+      Cuerpo
+        ListaDeclaracion
+          Asignacion
+            Identificador: total [id]
+            SentExpresion
+              OperacionMultiplicacion: * [mult_op]
+                Identificador: total [id]
+                Numero: 2 [NUMERO_ENTERO]
+      OperacionRelacional: < [rel_op]
+        Identificador: total [id]
+        Numero: 50 [NUMERO_ENTERO]
+    Salida
+      ContenidoSalida
+        Identificador: total [id]
+        Cadena: " listo" [cadena]

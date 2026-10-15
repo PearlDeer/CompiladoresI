@@ -1,0 +1,1058 @@
+{
+  "fase": "sintactico",
+  "tokens": [
+    {
+      "no": 1,
+      "token": "main",
+      "lexema": "main",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 1,
+      "columna": 1
+    },
+    {
+      "no": 2,
+      "token": "{",
+      "lexema": "{",
+      "tipo": "SIMBOLO",
+      "linea": 1,
+      "columna": 6
+    },
+    {
+      "no": 3,
+      "token": "int",
+      "lexema": "int",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 2,
+      "columna": 3
+    },
+    {
+      "no": 4,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 2,
+      "columna": 7
+    },
+    {
+      "no": 5,
+      "token": ",",
+      "lexema": ",",
+      "tipo": "SIMBOLO",
+      "linea": 2,
+      "columna": 8
+    },
+    {
+      "no": 6,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 2,
+      "columna": 10
+    },
+    {
+      "no": 7,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 2,
+      "columna": 11
+    },
+    {
+      "no": 8,
+      "token": "float",
+      "lexema": "float",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 3,
+      "columna": 3
+    },
+    {
+      "no": 9,
+      "token": "promedio",
+      "lexema": "promedio",
+      "tipo": "IDENTIFICADOR",
+      "linea": 3,
+      "columna": 9
+    },
+    {
+      "no": 10,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 3,
+      "columna": 17
+    },
+    {
+      "no": 11,
+      "token": "bool",
+      "lexema": "bool",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 4,
+      "columna": 3
+    },
+    {
+      "no": 12,
+      "token": "activo",
+      "lexema": "activo",
+      "tipo": "IDENTIFICADOR",
+      "linea": 4,
+      "columna": 8
+    },
+    {
+      "no": 13,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 4,
+      "columna": 14
+    },
+    {
+      "no": 14,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 6,
+      "columna": 3
+    },
+    {
+      "no": 15,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 6,
+      "columna": 5
+    },
+    {
+      "no": 16,
+      "token": "10",
+      "lexema": "10",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 6,
+      "columna": 7
+    },
+    {
+      "no": 17,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 6,
+      "columna": 9
+    },
+    {
+      "no": 18,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 7,
+      "columna": 3
+    },
+    {
+      "no": 19,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 7,
+      "columna": 5
+    },
+    {
+      "no": 20,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 7,
+      "columna": 7
+    },
+    {
+      "no": 21,
+      "token": "+",
+      "lexema": "+",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 7,
+      "columna": 9
+    },
+    {
+      "no": 22,
+      "token": "5",
+      "lexema": "5",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 7,
+      "columna": 11
+    },
+    {
+      "no": 23,
+      "token": "*",
+      "lexema": "*",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 7,
+      "columna": 13
+    },
+    {
+      "no": 24,
+      "token": "2",
+      "lexema": "2",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 7,
+      "columna": 15
+    },
+    {
+      "no": 25,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 7,
+      "columna": 16
+    },
+    {
+      "no": 26,
+      "token": "promedio",
+      "lexema": "promedio",
+      "tipo": "IDENTIFICADOR",
+      "linea": 8,
+      "columna": 3
+    },
+    {
+      "no": 27,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 8,
+      "columna": 12
+    },
+    {
+      "no": 28,
+      "token": "(",
+      "lexema": "(",
+      "tipo": "SIMBOLO",
+      "linea": 8,
+      "columna": 14
+    },
+    {
+      "no": 29,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 8,
+      "columna": 15
+    },
+    {
+      "no": 30,
+      "token": "+",
+      "lexema": "+",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 8,
+      "columna": 17
+    },
+    {
+      "no": 31,
+      "token": "3.5",
+      "lexema": "3.5",
+      "tipo": "NUMERO_REAL",
+      "linea": 8,
+      "columna": 19
+    },
+    {
+      "no": 32,
+      "token": ")",
+      "lexema": ")",
+      "tipo": "SIMBOLO",
+      "linea": 8,
+      "columna": 22
+    },
+    {
+      "no": 33,
+      "token": "/",
+      "lexema": "/",
+      "tipo": "OPERADOR_ARITMETICO",
+      "linea": 8,
+      "columna": 24
+    },
+    {
+      "no": 34,
+      "token": "2",
+      "lexema": "2",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 8,
+      "columna": 26
+    },
+    {
+      "no": 35,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 8,
+      "columna": 27
+    },
+    {
+      "no": 36,
+      "token": "activo",
+      "lexema": "activo",
+      "tipo": "IDENTIFICADOR",
+      "linea": 9,
+      "columna": 3
+    },
+    {
+      "no": 37,
+      "token": "=",
+      "lexema": "=",
+      "tipo": "ASIGNACION",
+      "linea": 9,
+      "columna": 10
+    },
+    {
+      "no": 38,
+      "token": "true",
+      "lexema": "true",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 9,
+      "columna": 12
+    },
+    {
+      "no": 39,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 9,
+      "columna": 16
+    },
+    {
+      "no": 40,
+      "token": "if",
+      "lexema": "if",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 11,
+      "columna": 3
+    },
+    {
+      "no": 41,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 11,
+      "columna": 6
+    },
+    {
+      "no": 42,
+      "token": ">=",
+      "lexema": ">=",
+      "tipo": "OPERADOR_RELACIONAL",
+      "linea": 11,
+      "columna": 8
+    },
+    {
+      "no": 43,
+      "token": "10",
+      "lexema": "10",
+      "tipo": "NUMERO_ENTERO",
+      "linea": 11,
+      "columna": 11
+    },
+    {
+      "no": 44,
+      "token": "then",
+      "lexema": "then",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 11,
+      "columna": 14
+    },
+    {
+      "no": 45,
+      "token": "cout",
+      "lexema": "cout",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 12,
+      "columna": 5
+    },
+    {
+      "no": 46,
+      "token": "<<",
+      "lexema": "<<",
+      "tipo": "OPERADOR_SALIDA",
+      "linea": 12,
+      "columna": 10
+    },
+    {
+      "no": 47,
+      "token": "\"valor de y\"",
+      "lexema": "\"valor de y\"",
+      "tipo": "CADENA",
+      "linea": 12,
+      "columna": 13
+    },
+    {
+      "no": 48,
+      "token": "<<",
+      "lexema": "<<",
+      "tipo": "OPERADOR_SALIDA",
+      "linea": 12,
+      "columna": 26
+    },
+    {
+      "no": 49,
+      "token": "y",
+      "lexema": "y",
+      "tipo": "IDENTIFICADOR",
+      "linea": 12,
+      "columna": 29
+    },
+    {
+      "no": 50,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 12,
+      "columna": 30
+    },
+    {
+      "no": 51,
+      "token": "else",
+      "lexema": "else",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 13,
+      "columna": 3
+    },
+    {
+      "no": 52,
+      "token": "cin",
+      "lexema": "cin",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 14,
+      "columna": 5
+    },
+    {
+      "no": 53,
+      "token": ">>",
+      "lexema": ">>",
+      "tipo": "OPERADOR_ENTRADA",
+      "linea": 14,
+      "columna": 9
+    },
+    {
+      "no": 54,
+      "token": "x",
+      "lexema": "x",
+      "tipo": "IDENTIFICADOR",
+      "linea": 14,
+      "columna": 12
+    },
+    {
+      "no": 55,
+      "token": ";",
+      "lexema": ";",
+      "tipo": "SIMBOLO",
+      "linea": 14,
+      "columna": 13
+    },
+    {
+      "no": 56,
+      "token": "end",
+      "lexema": "end",
+      "tipo": "PALABRA_RESERVADA",
+      "linea": 15,
+      "columna": 3
+    },
+    {
+      "no": 57,
+      "token": "}",
+      "lexema": "}",
+      "tipo": "SIMBOLO",
+      "linea": 16,
+      "columna": 1
+    }
+  ],
+  "errores": [],
+  "errores_lexicos": [],
+  "errores_sintacticos": [],
+  "errores_semanticos": [],
+  "errores_ejecucion": [],
+  "arbol": {
+    "nodo": "Programa",
+    "valor": "",
+    "tipo": "",
+    "hijos": [
+      {
+        "nodo": "ListaDeclaracion",
+        "valor": "",
+        "tipo": "",
+        "hijos": [
+          {
+            "nodo": "DeclaracionVariable",
+            "valor": "",
+            "tipo": "",
+            "hijos": [
+              {
+                "nodo": "Tipo",
+                "valor": "int",
+                "tipo": "tipo",
+                "hijos": [],
+                "linea": 2,
+                "columna": 3,
+                "atributos": {}
+              },
+              {
+                "nodo": "Identificadores",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "Identificador",
+                    "valor": "x",
+                    "tipo": "id",
+                    "hijos": [],
+                    "linea": 2,
+                    "columna": 7,
+                    "atributos": {}
+                  },
+                  {
+                    "nodo": "Identificador",
+                    "valor": "y",
+                    "tipo": "id",
+                    "hijos": [],
+                    "linea": 2,
+                    "columna": 10,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 2,
+                "columna": 7,
+                "atributos": {}
+              }
+            ],
+            "linea": 2,
+            "columna": 3,
+            "atributos": {}
+          },
+          {
+            "nodo": "DeclaracionVariable",
+            "valor": "",
+            "tipo": "",
+            "hijos": [
+              {
+                "nodo": "Tipo",
+                "valor": "float",
+                "tipo": "tipo",
+                "hijos": [],
+                "linea": 3,
+                "columna": 3,
+                "atributos": {}
+              },
+              {
+                "nodo": "Identificadores",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "Identificador",
+                    "valor": "promedio",
+                    "tipo": "id",
+                    "hijos": [],
+                    "linea": 3,
+                    "columna": 9,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 3,
+                "columna": 9,
+                "atributos": {}
+              }
+            ],
+            "linea": 3,
+            "columna": 3,
+            "atributos": {}
+          },
+          {
+            "nodo": "DeclaracionVariable",
+            "valor": "",
+            "tipo": "",
+            "hijos": [
+              {
+                "nodo": "Tipo",
+                "valor": "bool",
+                "tipo": "tipo",
+                "hijos": [],
+                "linea": 4,
+                "columna": 3,
+                "atributos": {}
+              },
+              {
+                "nodo": "Identificadores",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "Identificador",
+                    "valor": "activo",
+                    "tipo": "id",
+                    "hijos": [],
+                    "linea": 4,
+                    "columna": 8,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 4,
+                "columna": 8,
+                "atributos": {}
+              }
+            ],
+            "linea": 4,
+            "columna": 3,
+            "atributos": {}
+          },
+          {
+            "nodo": "Asignacion",
+            "valor": "",
+            "tipo": "",
+            "hijos": [
+              {
+                "nodo": "Identificador",
+                "valor": "x",
+                "tipo": "id",
+                "hijos": [],
+                "linea": 6,
+                "columna": 3,
+                "atributos": {}
+              },
+              {
+                "nodo": "SentExpresion",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "Numero",
+                    "valor": "10",
+                    "tipo": "NUMERO_ENTERO",
+                    "hijos": [],
+                    "linea": 6,
+                    "columna": 7,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 6,
+                "columna": 7,
+                "atributos": {}
+              }
+            ],
+            "linea": 6,
+            "columna": 3,
+            "atributos": {}
+          },
+          {
+            "nodo": "Asignacion",
+            "valor": "",
+            "tipo": "",
+            "hijos": [
+              {
+                "nodo": "Identificador",
+                "valor": "y",
+                "tipo": "id",
+                "hijos": [],
+                "linea": 7,
+                "columna": 3,
+                "atributos": {}
+              },
+              {
+                "nodo": "SentExpresion",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "OperacionSuma",
+                    "valor": "+",
+                    "tipo": "suma_op",
+                    "hijos": [
+                      {
+                        "nodo": "Identificador",
+                        "valor": "x",
+                        "tipo": "id",
+                        "hijos": [],
+                        "linea": 7,
+                        "columna": 7,
+                        "atributos": {}
+                      },
+                      {
+                        "nodo": "OperacionMultiplicacion",
+                        "valor": "*",
+                        "tipo": "mult_op",
+                        "hijos": [
+                          {
+                            "nodo": "Numero",
+                            "valor": "5",
+                            "tipo": "NUMERO_ENTERO",
+                            "hijos": [],
+                            "linea": 7,
+                            "columna": 11,
+                            "atributos": {}
+                          },
+                          {
+                            "nodo": "Numero",
+                            "valor": "2",
+                            "tipo": "NUMERO_ENTERO",
+                            "hijos": [],
+                            "linea": 7,
+                            "columna": 15,
+                            "atributos": {}
+                          }
+                        ],
+                        "linea": 7,
+                        "columna": 13,
+                        "atributos": {}
+                      }
+                    ],
+                    "linea": 7,
+                    "columna": 9,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 7,
+                "columna": 7,
+                "atributos": {}
+              }
+            ],
+            "linea": 7,
+            "columna": 3,
+            "atributos": {}
+          },
+          {
+            "nodo": "Asignacion",
+            "valor": "",
+            "tipo": "",
+            "hijos": [
+              {
+                "nodo": "Identificador",
+                "valor": "promedio",
+                "tipo": "id",
+                "hijos": [],
+                "linea": 8,
+                "columna": 3,
+                "atributos": {}
+              },
+              {
+                "nodo": "SentExpresion",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "OperacionMultiplicacion",
+                    "valor": "/",
+                    "tipo": "mult_op",
+                    "hijos": [
+                      {
+                        "nodo": "Grupo",
+                        "valor": "",
+                        "tipo": "",
+                        "hijos": [
+                          {
+                            "nodo": "OperacionSuma",
+                            "valor": "+",
+                            "tipo": "suma_op",
+                            "hijos": [
+                              {
+                                "nodo": "Identificador",
+                                "valor": "y",
+                                "tipo": "id",
+                                "hijos": [],
+                                "linea": 8,
+                                "columna": 15,
+                                "atributos": {}
+                              },
+                              {
+                                "nodo": "Numero",
+                                "valor": "3.5",
+                                "tipo": "NUMERO_REAL",
+                                "hijos": [],
+                                "linea": 8,
+                                "columna": 19,
+                                "atributos": {}
+                              }
+                            ],
+                            "linea": 8,
+                            "columna": 17,
+                            "atributos": {}
+                          }
+                        ],
+                        "linea": 8,
+                        "columna": 14,
+                        "atributos": {}
+                      },
+                      {
+                        "nodo": "Numero",
+                        "valor": "2",
+                        "tipo": "NUMERO_ENTERO",
+                        "hijos": [],
+                        "linea": 8,
+                        "columna": 26,
+                        "atributos": {}
+                      }
+                    ],
+                    "linea": 8,
+                    "columna": 24,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 8,
+                "columna": 14,
+                "atributos": {}
+              }
+            ],
+            "linea": 8,
+            "columna": 3,
+            "atributos": {}
+          },
+          {
+            "nodo": "Asignacion",
+            "valor": "",
+            "tipo": "",
+            "hijos": [
+              {
+                "nodo": "Identificador",
+                "valor": "activo",
+                "tipo": "id",
+                "hijos": [],
+                "linea": 9,
+                "columna": 3,
+                "atributos": {}
+              },
+              {
+                "nodo": "SentExpresion",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "Booleano",
+                    "valor": "true",
+                    "tipo": "bool",
+                    "hijos": [],
+                    "linea": 9,
+                    "columna": 12,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 9,
+                "columna": 12,
+                "atributos": {}
+              }
+            ],
+            "linea": 9,
+            "columna": 3,
+            "atributos": {}
+          },
+          {
+            "nodo": "Seleccion",
+            "valor": "",
+            "tipo": "",
+            "hijos": [
+              {
+                "nodo": "OperacionRelacional",
+                "valor": ">=",
+                "tipo": "rel_op",
+                "hijos": [
+                  {
+                    "nodo": "Identificador",
+                    "valor": "y",
+                    "tipo": "id",
+                    "hijos": [],
+                    "linea": 11,
+                    "columna": 6,
+                    "atributos": {}
+                  },
+                  {
+                    "nodo": "Numero",
+                    "valor": "10",
+                    "tipo": "NUMERO_ENTERO",
+                    "hijos": [],
+                    "linea": 11,
+                    "columna": 11,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 11,
+                "columna": 8,
+                "atributos": {}
+              },
+              {
+                "nodo": "Then",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "ListaDeclaracion",
+                    "valor": "",
+                    "tipo": "",
+                    "hijos": [
+                      {
+                        "nodo": "Salida",
+                        "valor": "",
+                        "tipo": "",
+                        "hijos": [
+                          {
+                            "nodo": "ContenidoSalida",
+                            "valor": "",
+                            "tipo": "",
+                            "hijos": [
+                              {
+                                "nodo": "Cadena",
+                                "valor": "\"valor de y\"",
+                                "tipo": "cadena",
+                                "hijos": [],
+                                "linea": 12,
+                                "columna": 13,
+                                "atributos": {}
+                              },
+                              {
+                                "nodo": "Identificador",
+                                "valor": "y",
+                                "tipo": "id",
+                                "hijos": [],
+                                "linea": 12,
+                                "columna": 29,
+                                "atributos": {}
+                              }
+                            ],
+                            "linea": 12,
+                            "columna": 13,
+                            "atributos": {}
+                          }
+                        ],
+                        "linea": 12,
+                        "columna": 5,
+                        "atributos": {}
+                      }
+                    ],
+                    "linea": 12,
+                    "columna": 5,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 12,
+                "columna": 5,
+                "atributos": {}
+              },
+              {
+                "nodo": "Else",
+                "valor": "",
+                "tipo": "",
+                "hijos": [
+                  {
+                    "nodo": "ListaDeclaracion",
+                    "valor": "",
+                    "tipo": "",
+                    "hijos": [
+                      {
+                        "nodo": "Entrada",
+                        "valor": "",
+                        "tipo": "",
+                        "hijos": [
+                          {
+                            "nodo": "Identificador",
+                            "valor": "x",
+                            "tipo": "id",
+                            "hijos": [],
+                            "linea": 14,
+                            "columna": 12,
+                            "atributos": {}
+                          }
+                        ],
+                        "linea": 14,
+                        "columna": 5,
+                        "atributos": {}
+                      }
+                    ],
+                    "linea": 14,
+                    "columna": 5,
+                    "atributos": {}
+                  }
+                ],
+                "linea": 14,
+                "columna": 5,
+                "atributos": {}
+              }
+            ],
+            "linea": 11,
+            "columna": 3,
+            "atributos": {}
+          }
+        ],
+        "linea": 2,
+        "columna": 3,
+        "atributos": {}
+      }
+    ],
+    "linea": 1,
+    "columna": 1,
+    "atributos": {}
+  },
+  "arbol_semantico": {},
+  "tabla_simbolos": [
+    {
+      "id": 1,
+      "nombre": "x",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 2,
+      "nombre": "y",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 3,
+      "nombre": "promedio",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 3
+    },
+    {
+      "id": 4,
+      "nombre": "activo",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 4
+    }
+  ],
+  "tabla_simbolos_lexica": [
+    {
+      "id": 1,
+      "nombre": "x",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 2,
+      "nombre": "y",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 2
+    },
+    {
+      "id": 3,
+      "nombre": "promedio",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 3
+    },
+    {
+      "id": 4,
+      "nombre": "activo",
+      "tipo": "desconocido",
+      "valor": "",
+      "scope": "global",
+      "linea": 4
+    }
+  ],
+  "conversiones": [],
+  "traza_semantica": [],
+  "estado": "completo",
+  "estado_semantico": "no_ejecutado",
+  "motivo_semantico": "La fase solicitada no incluye analisis semantico",
+  "valido": true,
+  "sha256_fuente": "c18bae297167f4babbaead7695da19288e099474b33062e07e09491e1853be38"
+}

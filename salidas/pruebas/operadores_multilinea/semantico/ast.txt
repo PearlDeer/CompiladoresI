@@ -1,0 +1,36 @@
+Programa
+  ListaDeclaracion
+    DeclaracionVariable
+      Tipo: int [tipo]
+      Identificadores
+        Identificador: a [id]
+        Identificador: b [id]
+    Asignacion
+      Identificador: a [id]
+      SentExpresion
+        Numero: 1 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: b [id]
+      SentExpresion
+        Numero: 2 [NUMERO_ENTERO]
+    Expresion
+      SentExpresion
+        OperacionIncremento: ++ [suma_op]
+          Identificador: a [id]
+    Expresion
+      SentExpresion
+        OperacionIncremento: -- [suma_op]
+          Identificador: b [id]
+    Seleccion
+      OperacionRelacional: == [rel_op]
+        Identificador: a [id]
+        Identificador: b [id]
+      Then
+        ListaDeclaracion
+          Salida
+            ContenidoSalida
+              Cadena: "iguales" [cadena]
+      Else
+        ListaDeclaracion
+          Entrada
+            Identificador: a [id]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.4.1.0.0.1.0.1",
+    "nodo_contexto": "0.0.4.1.0.0.1.0",
+    "motivo": "operandos mixtos",
+    "linea": 9,
+    "columna": 21
+  },
+  {
+    "id": 2,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.5.0.0.0.1.0.1",
+    "nodo_contexto": "0.0.5.0.0.0.1.0",
+    "motivo": "operandos mixtos",
+    "linea": 14,
+    "columna": 21
+  },
+  {
+    "id": 3,
+    "de": "int",
+    "a": "float",
+    "nodo_origen": "0.0.5.1.1",
+    "nodo_contexto": "0.0.5.1",
+    "motivo": "operandos mixtos",
+    "linea": 15,
+    "columna": 17
+  }
+]

@@ -23,7 +23,11 @@ Programa
     Asignacion
       Identificador: x [id]
       SentExpresion
-        Numero: 32 [NUMERO_ENTERO]
+        OperacionSuma: - [suma_op]
+          OperacionSuma: + [suma_op]
+            Identificador: x [id]
+            Numero: 32 [NUMERO_ENTERO]
+          Identificador: x [id]
     Asignacion
       Identificador: y [id]
       SentExpresion
@@ -103,8 +107,8 @@ Programa
     Seleccion
       Grupo
         OperacionRelacional: > [rel_op]
-          Identificador: a [id]
-          Identificador: b [id]
+          Numero: 5 [NUMERO_ENTERO]
+          Numero: 7 [NUMERO_ENTERO]
       Then
         ListaDeclaracion
           Asignacion
@@ -138,6 +142,10 @@ Programa
               OperacionSuma: + [suma_op]
                 Identificador: y [id]
                 Numero: 1 [NUMERO_ENTERO]
+    Asignacion
+      Identificador: a [id]
+      SentExpresion
+        Numero: 76 [NUMERO_ENTERO]
     Expresion
       SentExpresion
         OperacionIncremento: ++ [suma_op]
@@ -145,13 +153,9 @@ Programa
     Expresion
       SentExpresion
         OperacionIncremento: -- [suma_op]
-          Identificador: c [id]
-    Expresion
-      SentExpresion
-        OperacionIncremento: ++ [suma_op]
-          Identificador: x [id]
+          Identificador: a [id]
     Asignacion
-      Identificador: suma [id]
+      Identificador: x [id]
       SentExpresion
         OperacionPotencia: ^ [pot_op]
           Identificador: x [id]
@@ -159,24 +163,24 @@ Programa
     RepeticionDoWhile
       Cuerpo
         ListaDeclaracion
+          Asignacion
+            Identificador: y [id]
+            SentExpresion
+              OperacionSuma: + [suma_op]
+                OperacionMultiplicacion: * [mult_op]
+                  Grupo
+                    OperacionSuma: + [suma_op]
+                      Identificador: y [id]
+                      Numero: 1 [NUMERO_ENTERO]
+                  Numero: 2 [NUMERO_ENTERO]
+                Numero: 1 [NUMERO_ENTERO]
           IteracionWhile
             Grupo
-              OperacionRelacional: > [rel_op]
-                Identificador: x [id]
+              OperacionRelacional: != [rel_op]
+                Numero: 3 [NUMERO_ENTERO]
                 Numero: 7 [NUMERO_ENTERO]
             Cuerpo
               ListaDeclaracion
-                Asignacion
-                  Identificador: y [id]
-                  SentExpresion
-                    OperacionSuma: + [suma_op]
-                      OperacionMultiplicacion: * [mult_op]
-                        Grupo
-                          OperacionSuma: + [suma_op]
-                            Identificador: y [id]
-                            Numero: 1 [NUMERO_ENTERO]
-                        Numero: 2 [NUMERO_ENTERO]
-                      Numero: 1 [NUMERO_ENTERO]
                 Asignacion
                   Identificador: x [id]
                   SentExpresion
@@ -200,13 +204,15 @@ Programa
       Grupo
         OperacionLogica: && [op_logico]
           OperacionRelacional: == [rel_op]
-            Identificador: x [id]
+            Numero: 5 [NUMERO_ENTERO]
             Numero: 4 [NUMERO_ENTERO]
-          ErrorComponente: ) [error]
+          OperacionRelacional: == [rel_op]
+            Numero: 1 [NUMERO_ENTERO]
+            Numero: 1 [NUMERO_ENTERO]
     IteracionWhile
       Grupo
         OperacionRelacional: < [rel_op]
-          Identificador: z [id]
+          Numero: 200 [NUMERO_ENTERO]
           Numero: 100 [NUMERO_ENTERO]
       Cuerpo
         ListaDeclaracion
@@ -226,7 +232,7 @@ Programa
     IteracionWhile
       Grupo
         OperacionRelacional: == [rel_op]
-          Identificador: y [id]
+          Numero: 0 [NUMERO_ENTERO]
           Numero: 0 [NUMERO_ENTERO]
       Cuerpo
         ListaDeclaracion
@@ -245,7 +251,7 @@ Programa
           IteracionWhile
             Grupo
               OperacionRelacional: > [rel_op]
-                Identificador: x [id]
+                Numero: 5 [NUMERO_ENTERO]
                 Numero: 2 [NUMERO_ENTERO]
             Cuerpo
               ListaDeclaracion
@@ -265,10 +271,6 @@ Programa
                     Identificador: z [id]
                     Numero: 3 [NUMERO_ENTERO]
       Grupo
-        OperacionLogica: && [op_logico]
-          OperacionRelacional: > [rel_op]
-            Identificador: x [id]
-            Numero: 1 [NUMERO_ENTERO]
-          OperacionRelacional: != [rel_op]
-            Numero: 4 [NUMERO_ENTERO]
-            Identificador: a [id]
+        OperacionRelacional: > [rel_op]
+          Numero: 9 [NUMERO_ENTERO]
+          Numero: 1 [NUMERO_ENTERO]
